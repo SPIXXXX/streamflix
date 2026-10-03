@@ -41,7 +41,7 @@
                         id="password"
                         name="password"
                         class="w-full"
-                        placeholder="{{ __('Streamflix password') }}"
+                        placeholder="{{ __('Current password') }}"
                         required
                     />
 
