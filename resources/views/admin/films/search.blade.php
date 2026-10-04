@@ -1,8 +1,8 @@
 <div class="sf-admin-shell">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap');
-        .sf-admin-shell { min-height:100vh; background:radial-gradient(1200px 550px at 12% -10%, rgba(184,0,31,0.15), transparent 60%), radial-gradient(1000px 500px at 100% 0%, rgba(80,118,135,0.18), transparent 55%), #384B70; color:#FCFAEE; font-family:'Inter', system-ui, sans-serif; }
-        .sf-topbar { display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap; padding:18px 40px 20px; border-bottom:1px solid rgba(255,255,255,0.06); background:rgba(56,75,112,0.92); backdrop-filter:blur(10px); position:sticky; top:0; z-index:20; }
+        .sf-admin-shell { min-height:100vh; background:radial-gradient(1200px 550px at 12% -10%, rgba(184,0,31,0.15), transparent 60%), radial-gradient(1000px 500px at 100% 0%, rgba(80,118,135,0.18), transparent 55%), #182337; color:#FCFAEE; font-family:'Inter', system-ui, sans-serif; }
+        .sf-topbar { display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap; padding:18px 40px 20px; border-bottom:1px solid rgba(255,255,255,0.06); background:rgba(24,35,55,0.94); backdrop-filter:blur(10px); position:sticky; top:0; z-index:20; }
         .sf-brand { display:flex; align-items:center; gap:12px; }
         .sf-brand-mark { width:34px; height:34px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:rgba(184,0,31,0.18); color:#FCFAEE; }
         .sf-brand-name { font-family:'Fraunces',serif; font-size:1.4rem; font-weight:700; letter-spacing:0.02em; }
@@ -18,12 +18,12 @@
         .sf-admin-main { max-width:1100px; margin:0 auto; padding:42px 40px 80px; }
         .sf-hero { display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap; margin-bottom:28px; }
         .sf-hero h1 { margin:0; font-family:'Fraunces',serif; font-size:clamp(2.2rem, 3vw, 2.8rem); line-height:1.02; letter-spacing:-0.03em; }
-        .sf-panel { background:rgba(80,118,135,0.96); border:1px solid rgba(255,255,255,0.02); border-radius:18px; padding:24px; box-shadow:0 26px 60px -38px rgba(0,0,0,0.9); }
+        .sf-panel { background:rgba(34,54,76,0.96); border:1px solid rgba(255,255,255,0.02); border-radius:18px; padding:24px; box-shadow:0 26px 60px -38px rgba(0,0,0,0.9); }
         .sf-form { display:flex; gap:12px; margin-bottom:24px; }
-        .sf-input { flex:1; border-radius:12px; border:1px solid rgba(255,255,255,0.08); background:#384B70; color:white; padding:12px 14px; }
+        .sf-input { flex:1; border-radius:12px; border:1px solid rgba(255,255,255,0.08); background:#182337; color:white; padding:12px 14px; }
         .sf-primary-btn { display:inline-flex; align-items:center; justify-content:center; border-radius:10px; padding:12px 18px; background:#B8001F; color:white; font-weight:600; border:none; }
         .sf-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:16px; }
-        .sf-card { background:#384B70; border:1px solid rgba(255,255,255,0.06); border-radius:14px; overflow:hidden; }
+        .sf-card { background:#182337; border:1px solid rgba(255,255,255,0.06); border-radius:14px; overflow:hidden; }
         .sf-card img { width:100%; aspect-ratio:2/3; object-fit:cover; display:block; }
         @extends('admin.layout')
 

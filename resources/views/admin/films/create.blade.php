@@ -17,7 +17,7 @@
             <span id="queueCount" class="rounded-full bg-white/5 px-3 py-1 text-sm text-sf-muted">0 selected</span>
         </div>
         <div class="flex flex-col gap-2 sm:flex-row">
-            <input id="tmdbLookup" type="search" placeholder="Search by movie title..." class="flex-1 rounded-lg border border-sf-border bg-[#384B70] px-3 py-2 text-white placeholder:text-sf-muted focus:border-red-500 focus:ring-red-500">
+            <input id="tmdbLookup" type="search" placeholder="Search by movie title..." class="flex-1 rounded-lg border border-sf-border bg-[#182337] px-3 py-2 text-white placeholder:text-sf-muted focus:border-red-500 focus:ring-red-500">
             <button id="tmdbLookupBtn" type="button" class="rounded-lg bg-red-600 px-4 py-2 font-semibold text-white transition hover:bg-red-500 disabled:cursor-wait disabled:opacity-60">Search movies</button>
         </div>
         <p id="tmdbStatus" role="status" aria-live="polite" class="mt-3 hidden text-sm text-sf-muted"></p>
@@ -90,7 +90,7 @@
                 card.dataset.posterPath = film.poster_path || '';
                 card.dataset.posterUrl = film.poster_url || '';
                 card.setAttribute('aria-pressed', selected ? 'true' : 'false');
-                card.className = `flex w-full gap-3 rounded-lg border p-3 text-left transition hover:border-red-400/70 ${selected ? 'border-red-500 bg-red-950/30 ring-1 ring-red-500/50' : 'border-sf-border bg-[#384B70]'}`;
+                card.className = `flex w-full gap-3 rounded-lg border p-3 text-left transition hover:border-red-400/70 ${selected ? 'border-red-500 bg-red-950/30 ring-1 ring-red-500/50' : 'border-sf-border bg-[#182337]'}`;
                 const imageWrap = document.createElement('div');
                 imageWrap.className = 'flex h-28 w-[4.5rem] shrink-0 items-center justify-center overflow-hidden rounded bg-sf-bg text-center text-[10px] text-sf-muted';
                 if (film.poster_url) {
@@ -170,7 +170,7 @@
                 select.setAttribute('aria-pressed', activeFilmId === tmdbId ? 'true' : 'false');
                 select.className = `block w-full overflow-hidden rounded-xl border text-left transition ${activeFilmId === tmdbId ? 'border-red-500 ring-2 ring-red-500/50' : 'border-sf-border hover:border-white/40'}`;
                 const poster = document.createElement('div');
-                poster.className = 'flex aspect-[2/3] items-center justify-center overflow-hidden bg-[#384B70] text-xs text-sf-muted';
+                poster.className = 'flex aspect-[2/3] items-center justify-center overflow-hidden bg-[#182337] text-xs text-sf-muted';
                 if (film.poster_url) {
                     const image = document.createElement('img');
                     image.src = film.poster_url;
@@ -181,7 +181,7 @@
                 } else poster.textContent = 'No poster';
                 const name = document.createElement('span');
                 name.dataset.cardTitle = tmdbId;
-                name.className = 'block truncate bg-[#384B70] px-2 py-2 text-xs font-medium text-white';
+                name.className = 'block truncate bg-[#182337] px-2 py-2 text-xs font-medium text-white';
                 name.textContent = film.title || 'Untitled film';
                 select.append(poster, name);
                 const remove = document.createElement('button');
@@ -205,7 +205,7 @@
             else input.type = type;
             input.value = film[key] ?? '';
             input.dataset.field = key;
-            input.className = 'w-full rounded-lg border border-white/10 bg-[#384B70] px-3 py-2 text-sm text-white focus:border-red-500 focus:outline-none';
+            input.className = 'w-full rounded-lg border border-white/10 bg-[#182337] px-3 py-2 text-sm text-white focus:border-red-500 focus:outline-none';
             if (key === 'title') input.required = true;
             if (key === 'release_year') { input.min = '1900'; input.max = String(new Date().getFullYear() + 5); }
             wrapper.append(caption, input);
@@ -219,13 +219,13 @@
             if (!film) return;
 
             const layout = document.createElement('div');
-            layout.className = 'grid gap-5 rounded-xl border border-sf-border bg-[#384B70] p-4 lg:grid-cols-[220px_minmax(0,1fr)] sm:p-5';
+            layout.className = 'grid gap-5 rounded-xl border border-sf-border bg-[#182337] p-4 lg:grid-cols-[220px_minmax(0,1fr)] sm:p-5';
             const posterColumn = document.createElement('div');
             const posterHeading = document.createElement('p');
             posterHeading.className = 'mb-2 text-sm font-medium text-sf-muted';
             posterHeading.textContent = 'Poster preview';
             const posterFrame = document.createElement('div');
-            posterFrame.className = 'mx-auto flex aspect-[2/3] w-full max-w-[220px] items-center justify-center overflow-hidden rounded-lg border border-white/10 bg-[#384B70] text-sm text-sf-muted';
+            posterFrame.className = 'mx-auto flex aspect-[2/3] w-full max-w-[220px] items-center justify-center overflow-hidden rounded-lg border border-white/10 bg-[#182337] text-sm text-sf-muted';
             if (film.poster_url) {
                 const image = document.createElement('img');
                 image.src = film.poster_url;

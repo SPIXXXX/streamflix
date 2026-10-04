@@ -3,12 +3,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#384B70">
+    <meta name="theme-color" content="#182337">
     <meta name="description" content="Find your next favorite film, share your reviews, and build movie lists with the Cinevault community.">
     <title>{{ config('app.name', 'CINEVAULT') }} — Find your next favorite</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen overflow-x-hidden bg-[#384B70] font-sans text-white antialiased">
+<body class="min-h-screen overflow-x-hidden bg-[#182337] font-sans text-white antialiased">
     <header class="absolute inset-x-0 top-0 z-20">
         <nav class="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 sm:px-8 lg:px-12" aria-label="Main navigation">
             <a href="{{ route('home') }}" class="flex items-center gap-3" aria-label="Cinevault home">
@@ -32,10 +32,10 @@
 
     <main>
         <section class="relative isolate flex min-h-[720px] items-center overflow-hidden pt-24 lg:min-h-[780px]">
-            <div class="absolute inset-0 -z-20 bg-[radial-gradient(ellipse_at_76%_42%,rgba(184,0,31,.22),transparent_40%),radial-gradient(ellipse_at_17%_78%,rgba(80,118,135,.18),transparent_38%),linear-gradient(115deg,#384B70_12%,#384B70_56%,#507687)]"></div>
+            <div class="absolute inset-0 -z-20 bg-[radial-gradient(ellipse_at_76%_42%,rgba(184,0,31,.22),transparent_40%),radial-gradient(ellipse_at_17%_78%,rgba(34,54,76,.3),transparent_38%),linear-gradient(115deg,#182337_12%,#182337_56%,#22364c)]"></div>
             <div class="absolute right-[-12%] top-[12%] -z-10 h-[570px] w-[570px] rounded-full border border-white/[0.04] sm:right-[3%] sm:h-[680px] sm:w-[680px]"></div>
             <div class="absolute right-[-4%] top-[21%] -z-10 h-[450px] w-[450px] rounded-full border border-white/[0.05] sm:right-[11%] sm:h-[520px] sm:w-[520px]"></div>
-            <div class="absolute inset-0 -z-10 bg-gradient-to-r from-[#384B70] via-[#384B70]/95 to-transparent"></div>
+            <div class="absolute inset-0 -z-10 bg-gradient-to-r from-[#182337] via-[#182337]/95 to-transparent"></div>
 
             <div class="mx-auto grid w-full max-w-7xl items-center gap-12 px-5 pb-20 pt-12 sm:px-8 lg:grid-cols-[1.02fr_.98fr] lg:px-12 lg:pb-28">
                 <div class="max-w-2xl">
@@ -56,31 +56,31 @@
                     </div>
                     <div class="mt-12 flex items-center gap-4 border-t border-white/10 pt-6 text-sm text-white/55">
                         <div class="flex -space-x-2" aria-hidden="true">
-                            <span class="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#384B70] bg-[#507687] text-[10px] font-bold text-white">J</span>
-                            <span class="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#384B70] bg-[#384B70] text-[10px] font-bold text-white">M</span>
-                            <span class="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#384B70] bg-[#718C99] text-[10px] font-bold text-white">A</span>
+                            <span class="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#182337] bg-[#22364c] text-[10px] font-bold text-white">J</span>
+                            <span class="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#182337] bg-[#182337] text-[10px] font-bold text-white">M</span>
+                            <span class="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#182337] bg-[#39536A] text-[10px] font-bold text-white">A</span>
                         </div>
                         <p><span class="font-semibold text-white">Your people are here.</span> Make every watch count.</p>
                     </div>
                 </div>
 
                 <div class="relative mx-auto hidden h-[470px] w-full max-w-[560px] items-center justify-center lg:flex" aria-hidden="true">
-                    <div class="absolute right-[3%] top-[4%] h-[390px] w-[260px] rotate-[9deg] overflow-hidden rounded-2xl border border-white/10 bg-[#507687] shadow-2xl shadow-black/70">
+                    <div class="absolute right-[3%] top-[4%] h-[390px] w-[260px] rotate-[9deg] overflow-hidden rounded-2xl border border-white/10 bg-[#22364c] shadow-2xl shadow-black/70">
                         <img class="h-full w-full object-cover opacity-80" src="https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&amp;fit=crop&amp;w=800&amp;q=85" alt="" onerror="this.style.display='none'">
                         <div class="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent"></div>
                         <div class="absolute inset-x-0 bottom-0 p-6"><span class="text-[10px] font-bold uppercase tracking-[.24em] text-[#FCFAEE]">The collection</span><p class="mt-2 text-2xl font-black">Stories<br>worth keeping.</p></div>
                     </div>
-                    <div class="absolute left-[7%] top-[17%] h-[365px] w-[245px] -rotate-[10deg] overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[#64889A] via-[#507687] to-[#384B70] shadow-2xl shadow-black/70">
+                    <div class="absolute left-[7%] top-[17%] h-[365px] w-[245px] -rotate-[10deg] overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[#2E465C] via-[#22364c] to-[#182337] shadow-2xl shadow-black/70">
                         <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_38%,rgba(232,183,107,.65),transparent_26%),linear-gradient(150deg,transparent_40%,rgba(4,7,8,.92))]"></div>
-                        <div class="absolute left-7 top-8 h-44 w-36 rounded-[48%_48%_42%_42%] bg-gradient-to-b from-[#d6b68b]/80 to-[#384B70]/90 blur-[1px]"></div>
+                        <div class="absolute left-7 top-8 h-44 w-36 rounded-[48%_48%_42%_42%] bg-gradient-to-b from-[#d6b68b]/80 to-[#182337]/90 blur-[1px]"></div>
                         <div class="absolute inset-x-0 bottom-0 p-6"><span class="text-[10px] font-bold uppercase tracking-[.24em] text-white/65">Curated for you</span><p class="mt-2 text-3xl font-black leading-none">A world<br>of cinema.</p></div>
                     </div>
-                    <div class="absolute bottom-[4%] right-[7%] rounded-2xl border border-white/10 bg-[#384B70]/90 p-4 shadow-xl backdrop-blur">
+                    <div class="absolute bottom-[4%] right-[7%] rounded-2xl border border-white/10 bg-[#182337]/90 p-4 shadow-xl backdrop-blur">
                         <div class="flex items-center gap-3"><span class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#B8001F]/15 text-[#FCFAEE]"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="m10 1.5 2.37 4.8 5.3.77-3.84 3.74.91 5.28L10 13.6l-4.74 2.49.9-5.28-3.83-3.74 5.3-.77L10 1.5Z"/></svg></span><div><p class="text-xs text-white/50">Your next favorite</p><p class="mt-0.5 text-sm font-bold">is out there.</p></div></div>
                     </div>
                 </div>
             </div>
-            <div class="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-[#384B70] to-transparent"></div>
+            <div class="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-[#182337] to-transparent"></div>
         </section>
 
         <section class="mx-auto max-w-7xl px-5 pb-20 sm:px-8 lg:px-12 lg:pb-28">
