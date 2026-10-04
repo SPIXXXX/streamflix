@@ -1,5 +1,5 @@
 <x-guest-layout>
-    <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data" class="space-y-4">
+    <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data" data-loading-form class="space-y-4">
         @csrf
 
         <div>

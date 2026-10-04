@@ -16,36 +16,7 @@
             </div>
         </header>
 
-        @foreach ([['most-active', 'Most Active Reviewers', 'Members with the most published reviews.', $mostActive, 'active'], ['featured', 'Featured Members', 'Community members selected by an administrator.', $featured, 'featured'], ['popular', 'Popular Members', 'Ranked by review reactions, reviews, and public movie lists.', $popular, 'popular']] as [$id, $title, $description, $sectionMembers, $sectionSort])
-            <section class="mb-10" aria-labelledby="{{ $id }}-heading">
-                <div class="mb-4 flex items-end justify-between gap-4">
-                    <div>
-                        <h2 id="{{ $id }}-heading" class="text-xl font-semibold text-white sm:text-2xl">{{ $title }}</h2>
-                        <p class="mt-1 text-sm text-sf-muted">{{ $description }}</p>
-                    </div>
-                    <a href="{{ route('members.index', ['sort' => $sectionSort]) }}#members-directory" class="shrink-0 rounded-lg px-2 py-2 text-sm font-semibold text-sf-blue transition hover:text-white focus:outline-none focus:ring-2 focus:ring-sf-blue/50">View All <span aria-hidden="true">→</span></a>
-                </div>
-                @if ($sectionMembers->isEmpty())
-                    <div class="rounded-2xl border border-sf-border bg-sf-surface/60 px-5 py-7 text-sm text-sf-muted">
-                        @if ($sectionSort === 'featured')
-                            No featured members yet.
-                        @elseif ($sectionSort === 'active')
-                            No members have posted reviews yet.
-                        @else
-                            No popular members to show yet.
-                        @endif
-                    </div>
-                @else
-                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                        @foreach ($sectionMembers as $member)
-                            <x-member-card :member="$member" />
-                        @endforeach
-                    </div>
-                @endif
-            </section>
-        @endforeach
-
-        <section id="members-directory" class="scroll-mt-24" aria-labelledby="members-directory-heading">
+        <section id="members-directory" class="mb-10 scroll-mt-24" aria-labelledby="members-directory-heading">
             <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
                     <h2 id="members-directory-heading" class="text-xl font-semibold text-white sm:text-2xl">{{ ['active' => 'Most Active Reviewers', 'popular' => 'Popular Members', 'featured' => 'Featured Members'][$sort] ?? 'All Members' }}</h2>
@@ -76,5 +47,35 @@
                 <div class="mt-8">{{ $members->links() }}</div>
             @endif
         </section>
+
+        @foreach ([['most-active', 'Most Active Reviewers', 'Members with the most published reviews.', $mostActive, 'active'], ['featured', 'Featured Members', 'Community members selected by an administrator.', $featured, 'featured'], ['popular', 'Popular Members', 'Ranked by review reactions, reviews, and public movie lists.', $popular, 'popular']] as [$id, $title, $description, $sectionMembers, $sectionSort])
+            <section class="mb-10" aria-labelledby="{{ $id }}-heading">
+                <div class="mb-4 flex items-end justify-between gap-4">
+                    <div>
+                        <h2 id="{{ $id }}-heading" class="text-xl font-semibold text-white sm:text-2xl">{{ $title }}</h2>
+                        <p class="mt-1 text-sm text-sf-muted">{{ $description }}</p>
+                    </div>
+                    <a href="{{ route('members.index', ['sort' => $sectionSort]) }}#members-directory" class="shrink-0 rounded-lg px-2 py-2 text-sm font-semibold text-sf-blue transition hover:text-white focus:outline-none focus:ring-2 focus:ring-sf-blue/50">View All <span aria-hidden="true">→</span></a>
+                </div>
+                @if ($sectionMembers->isEmpty())
+                    <div class="rounded-2xl border border-sf-border bg-sf-surface/60 px-5 py-7 text-sm text-sf-muted">
+                        @if ($sectionSort === 'featured')
+                            No featured members yet.
+                        @elseif ($sectionSort === 'active')
+                            No members have posted reviews yet.
+                        @else
+                            No popular members to show yet.
+                        @endif
+                    </div>
+                @else
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        @foreach ($sectionMembers as $member)
+                            <x-member-card :member="$member" />
+                        @endforeach
+                    </div>
+                @endif
+            </section>
+        @endforeach
+
     </main>
 </x-app-layout>

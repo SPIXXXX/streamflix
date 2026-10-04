@@ -68,6 +68,30 @@ function initializeFeedback() {
         });
     });
 
+    document.addEventListener('submit', (event) => {
+        const form = event.target;
+        if (!(form instanceof HTMLFormElement) || event.defaultPrevented) {
+            return;
+        }
+
+        const isAdminPost = Boolean(form.closest('[data-admin-area]')) && ['post', 'put', 'patch', 'delete'].includes(form.method.toLowerCase());
+        if (!form.hasAttribute('data-loading-form') && !isAdminPost) {
+            return;
+        }
+
+        const button = event.submitter instanceof HTMLButtonElement
+            ? event.submitter
+            : form.querySelector('button[type="submit"], button:not([type]), input[type="submit"]');
+        if (!button || button.dataset.loading === 'true') {
+            return;
+        }
+
+        button.dataset.loading = 'true';
+        button.setAttribute('aria-busy', 'true');
+        button.disabled = true;
+        button.classList.add('cursor-wait');
+    });
+
     document.querySelectorAll('[data-toast]').forEach((toast) => {
         requestAnimationFrame(() => toast.classList.remove('translate-y-2', 'opacity-0'));
         window.setTimeout(() => dismissToast(toast), toast.getAttribute('role') === 'alert' ? 8000 : 5500);

@@ -1,5 +1,5 @@
 <x-guest-layout>
-    <form method="POST" action="{{ route('login') }}" class="space-y-4">
+    <form method="POST" action="{{ route('login') }}" data-loading-form class="space-y-4">
         @csrf
 
         <div>
