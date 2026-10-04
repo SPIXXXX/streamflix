@@ -146,7 +146,7 @@
                             <button type="button" @click="rating = i" @mouseenter="hover = i" @mouseleave="hover = 0"
                                     @keydown.left.prevent="rating = Math.max(1, rating - 1)" @keydown.right.prevent="rating = Math.min(5, rating + 1)"
                                     :aria-checked="rating === i" :aria-label="`${i} star${i === 1 ? '' : 's'}`" role="radio" :tabindex="rating === i || (!rating && i === 1) ? 0 : -1"
-                                    class="rounded-md p-1 text-3xl transition duration-150 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-sf-blue/50"
+                                    class="rounded-md p-1 text-3xl transition duration-150 hover:scale-110 focus:outline-none focus:ring-0"
                                     :class="(hover || rating) >= i ? 'text-amber-300' : 'text-sf-border'">
                                 <span aria-hidden="true">★</span>
                             </button>

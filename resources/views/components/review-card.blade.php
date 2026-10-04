@@ -42,19 +42,34 @@
     </header>
 
     <div x-cloak x-show="editingReview" class="ml-0 mt-3 sm:ml-[3.25rem]">
-        <form action="{{ route('reviews.update', $review) }}" method="POST" class="space-y-3 rounded-lg border border-sf-border bg-sf-bg/60 p-3">
+        <form action="{{ route('reviews.update', $review) }}" method="POST" x-data="{ rating: @js((int) $review->rating), hover: 0, saving: false }" @submit="saving = true" class="space-y-3 rounded-lg border border-sf-border bg-sf-bg/60 p-3">
             @csrf
             @method('PATCH')
-            <div>
-                <label for="edit-review-rating-{{ $review->id }}" class="mb-1 block text-xs font-medium text-sf-muted">Rating (1–5)</label>
-                <input id="edit-review-rating-{{ $review->id }}" type="number" name="rating" min="1" max="5" required value="{{ $review->rating }}" class="w-24 rounded-lg border border-sf-border bg-sf-bg px-3 py-2 text-sm text-white focus:border-sf-blue focus:ring-sf-blue">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <span id="edit-review-rating-label-{{ $review->id }}" class="block text-xs font-medium text-sf-muted">Your rating <span class="text-red-400">*</span></span>
+                <span class="text-xs text-sf-muted" x-text="`${rating} out of 5 stars`">{{ $review->rating }} out of 5 stars</span>
             </div>
+            <div class="flex items-center gap-1" role="radiogroup" aria-labelledby="edit-review-rating-label-{{ $review->id }}">
+                <template x-for="i in 5" :key="i">
+                    <button type="button" @click="rating = i" @mouseenter="hover = i" @mouseleave="hover = 0"
+                            @keydown.left.prevent="rating = Math.max(1, rating - 1)" @keydown.right.prevent="rating = Math.min(5, rating + 1)"
+                            :aria-checked="rating === i" :aria-label="`${i} star${i === 1 ? '' : 's'}`" role="radio" :tabindex="rating === i ? 0 : -1"
+                            class="rounded-md p-1 text-3xl transition duration-150 hover:scale-110 focus:outline-none focus:ring-0"
+                            :class="(hover || rating) >= i ? 'text-amber-300' : 'text-sf-border'">
+                        <span aria-hidden="true">★</span>
+                    </button>
+                </template>
+            </div>
+            <input type="hidden" name="rating" x-model="rating">
             <div>
                 <label for="edit-review-comment-{{ $review->id }}" class="mb-1 block text-xs font-medium text-sf-muted">Review</label>
                 <textarea id="edit-review-comment-{{ $review->id }}" name="comment" rows="3" maxlength="2000" required class="w-full rounded-lg border border-sf-border bg-sf-bg px-3 py-2 text-sm text-white focus:border-sf-blue focus:ring-sf-blue">{{ $review->comment }}</textarea>
             </div>
             <div class="flex items-center gap-2">
-                <button type="submit" class="rounded-md bg-sf-blue px-3 py-1.5 text-xs font-semibold text-white hover:bg-sf-blue-dark">Save changes</button>
+                <button type="submit" :disabled="saving" :aria-busy="saving" class="inline-flex items-center gap-1.5 rounded-md bg-sf-blue px-3 py-1.5 text-xs font-semibold text-white hover:bg-sf-blue-dark disabled:cursor-wait disabled:opacity-80">
+                    <svg x-cloak x-show="saving" class="h-3.5 w-3.5 animate-spin" aria-hidden="true" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 0 1 8-8V0C5.4 0 0 5.4 0 12h4z" transform="translate(0 4)"/></svg>
+                    <span x-text="saving ? 'Saving…' : 'Save changes'">Save changes</span>
+                </button>
                 <button type="button" @click="editingReview = false" class="rounded-md px-3 py-1.5 text-xs text-sf-muted hover:bg-sf-bg hover:text-white">Cancel</button>
             </div>
         </form>
