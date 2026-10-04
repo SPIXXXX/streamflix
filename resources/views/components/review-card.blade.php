@@ -4,7 +4,7 @@
     'showDate' => false,
 ])
 
-<article class="border-b border-sf-border py-5 last:border-b-0 sm:py-6">
+<article id="review-{{ $review->id }}" class="border-b border-sf-border py-5 last:border-b-0 sm:py-6">
     <header class="flex items-start justify-between gap-3">
         <div class="flex min-w-0 items-center gap-3">
             @if ($showAuthor)
@@ -54,4 +54,36 @@
             </button>
         </div>
     @endauth
+
+    <section class="mt-4 border-t border-sf-border pt-4" aria-label="Comments on this review">
+        <h3 class="text-sm font-semibold text-white">Discussion <span class="font-normal text-sf-muted">({{ $review->comments->count() }})</span></h3>
+
+        @if ($review->comments->isNotEmpty())
+            <div class="mt-3 space-y-3">
+                @foreach ($review->comments as $reviewComment)
+                    <div class="flex items-start gap-2.5">
+                        <x-user-avatar :user="$reviewComment->user" size="h-8 w-8" text-size="text-xs" />
+                        <div class="min-w-0 flex-1 rounded-xl bg-sf-bg/70 px-3 py-2.5">
+                            <div class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+                                <span class="text-xs font-semibold text-white">{{ $reviewComment->user->name }}</span>
+                                <time class="text-[11px] text-sf-muted" datetime="{{ $reviewComment->created_at?->toIso8601String() }}">{{ $reviewComment->created_at?->diffForHumans() }}</time>
+                            </div>
+                            <p class="mt-1 whitespace-pre-line break-words text-sm leading-5 text-gray-300">{{ $reviewComment->body }}</p>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+
+        @auth
+            <form action="{{ route('reviews.comments.store', $review) }}" method="POST" class="mt-3 flex items-start gap-2.5">
+                @csrf
+                <label class="sr-only" for="review-comment-{{ $review->id }}">Write a comment</label>
+                <textarea id="review-comment-{{ $review->id }}" name="body" rows="2" maxlength="2000" required placeholder="Add to the discussion…" class="min-w-0 flex-1 resize-y rounded-xl border border-sf-border bg-sf-bg px-3 py-2.5 text-sm text-white placeholder:text-sf-muted focus:border-sf-blue focus:ring-sf-blue"></textarea>
+                <button type="submit" class="shrink-0 rounded-xl bg-sf-blue px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sf-blue-dark focus:outline-none focus:ring-2 focus:ring-sf-blue/50">Comment</button>
+            </form>
+        @else
+            <p class="mt-3 text-xs text-sf-muted"><a href="{{ route('login') }}" class="font-semibold text-sf-blue hover:underline">Log in</a> to join the discussion.</p>
+        @endauth
+    </section>
 </article>

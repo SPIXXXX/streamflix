@@ -70,6 +70,7 @@ class FilmController extends Controller
         $highestRated = $buildFilmQuery()->has('reviews', '>=', 2)->withCount('reviews')->withAvg('reviews', 'rating')
             ->orderByDesc('reviews_avg_rating')->orderByDesc('reviews_count')->limit(12)->get();
         $popularReviews = Review::with(['user', 'film'])
+            ->withCount('comments')
             ->withCount(['reactions as weekly_agree_count' => fn (Builder $query) => $query->where('reaction', 'agree')->where('created_at', '>=', $weekAgo)])
             ->where('created_at', '>=', $weekAgo)->orderByDesc('weekly_agree_count')->orderByDesc('created_at')->orderByDesc('id')->take(5)->get();
         $exploreFilms = $buildFilmQuery()->withCount('reviews')->withAvg('reviews', 'rating')
@@ -95,6 +96,7 @@ class FilmController extends Controller
         if ($category === 'popular-reviews-this-week') {
             $popularReviews = Review::query()
                 ->with(['user', 'film'])
+                ->withCount('comments')
                 ->withCount(['reactions as weekly_agree_count' => fn (Builder $query) => $query
                     ->where('reaction', 'agree')
                     ->where('created_at', '>=', $weekAgo)])
@@ -161,6 +163,7 @@ class FilmController extends Controller
         $film->load([
             'reviews' => fn ($query) => $query
                 ->with('user')
+                ->with('comments.user')
                 ->withCount([
                     'reactions as agree_count' => fn (Builder $reactions) => $reactions->where('reaction', 'agree'),
                     'reactions as disagree_count' => fn (Builder $reactions) => $reactions->where('reaction', 'disagree'),

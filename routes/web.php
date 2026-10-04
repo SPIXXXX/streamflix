@@ -11,6 +11,7 @@ use App\Http\Controllers\FilmController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MovieListController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReviewCommentController;
 use App\Http\Controllers\ReviewReactionController;
 use App\Http\Controllers\TeaserController;
 use Illuminate\Support\Facades\Route;
@@ -40,6 +41,7 @@ Route::middleware('auth')->group(function () {
 
     // Review reactions (agree / disagree)
     Route::post('/reviews/{review}/reactions', [ReviewReactionController::class, 'store'])->name('reviews.reactions.store');
+    Route::post('/reviews/{review}/comments', [ReviewCommentController::class, 'store'])->name('reviews.comments.store');
     Route::post('/films/{film}/favorite', [FilmController::class, 'toggleFavorite'])->name('films.favorite');
 });
 

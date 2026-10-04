@@ -28,6 +28,11 @@ class Review extends Model
         return $this->hasMany(ReviewReaction::class);
     }
 
+    public function comments(): HasMany
+    {
+        return $this->hasMany(ReviewComment::class)->latest();
+    }
+
     public function agreeCount(): int
     {
         return $this->reactions()->where('reaction', 'agree')->count();

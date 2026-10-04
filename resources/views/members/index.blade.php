@@ -39,9 +39,9 @@
                     <p class="mt-1 text-sm text-sf-muted">Try another name or choose a different member filter.</p>
                 </div>
             @else
-                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                <div class="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4" role="region" aria-label="All members carousel" tabindex="0">
                     @foreach ($members as $member)
-                        <x-member-card :member="$member" />
+                        <div class="w-72 shrink-0 snap-start sm:w-80"><x-member-card :member="$member" /></div>
                     @endforeach
                 </div>
                 <div class="mt-8">{{ $members->links() }}</div>
@@ -68,9 +68,9 @@
                         @endif
                     </div>
                 @else
-                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    <div class="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4" role="region" aria-label="{{ $title }} carousel" tabindex="0">
                         @foreach ($sectionMembers as $member)
-                            <x-member-card :member="$member" />
+                            <div class="w-72 shrink-0 snap-start sm:w-80"><x-member-card :member="$member" /></div>
                         @endforeach
                     </div>
                 @endif
