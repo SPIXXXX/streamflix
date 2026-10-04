@@ -7,6 +7,7 @@ use App\Models\CastMember;
 use App\Models\Film;
 use App\Models\Review;
 use App\Services\TmdbService;
+use App\Support\FilmGenreFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -20,24 +21,27 @@ class FilmController extends Controller
     {
         $filters = $request->validate([
             'q' => 'nullable|string|max:100',
-            'genre' => 'nullable|string|max:100',
+            'genres' => 'sometimes|array|max:30',
+            'genres.*' => 'string|max:100',
         ]);
+        $filters['genres'] = array_values(array_unique($filters['genres'] ?? []));
         $weekAgo = now()->subDays(7);
         $buildFilmQuery = function () use ($filters): Builder {
-            return Film::query()
+            $query = Film::query()
                 ->when($filters['q'] ?? null, function (Builder $query, string $search): void {
                     $query->where(function (Builder $query) use ($search): void {
                         $query->where('title', 'like', "%{$search}%")
                             ->orWhere('synopsis', 'like', "%{$search}%");
                     });
-                })
-                ->when($filters['genre'] ?? null, fn (Builder $query, string $genre) => $query->where('genre', 'like', "%{$genre}%"));
+                });
+
+            return FilmGenreFilter::apply($query, $filters['genres']);
         };
         $genres = Film::query()->whereNotNull('genre')->distinct()->pluck('genre')
             ->flatMap(fn (string $genre): array => explode(',', $genre))
             ->map(fn (string $genre): string => trim($genre))
             ->filter()->unique()->sort()->values();
-        if ($request->filled('q') || $request->filled('genre')) {
+        if ($request->filled('q') || $filters['genres'] !== []) {
             $searchResults = $buildFilmQuery()->withCount('reviews')->withAvg('reviews', 'rating')
                 ->orderBy('title')->paginate(24)->withQueryString();
 

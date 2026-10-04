@@ -7,6 +7,7 @@ use App\Jobs\SyncFilmCast;
 use App\Models\Film;
 use App\Services\PublicMediaStorage;
 use App\Services\TmdbService;
+use App\Support\FilmGenreFilter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -14,15 +15,33 @@ class FilmController extends Controller
 {
     public function __construct(protected TmdbService $tmdb) {}
 
-    public function index()
+    public function index(Request $request)
     {
-        $films = Film::query()
+        $filters = $request->validate([
+            'q' => 'nullable|string|max:100',
+            'genres' => 'sometimes|array|max:30',
+            'genres.*' => 'string|max:100',
+        ]);
+        $filters['genres'] = array_values(array_unique($filters['genres'] ?? []));
+        $genreRows = Film::query()->whereNotNull('genre')->where('genre', '!=', '')->pluck('genre');
+        $genres = $genreRows->flatMap(fn (string $value) => explode(',', $value))
+            ->map(fn (string $genre) => trim($genre))->filter()->unique()->sort()->values();
+
+        $query = Film::query()
+            ->when($filters['q'] ?? null, function ($query, string $search): void {
+                $query->where(function ($matches) use ($search): void {
+                    $matches->where('title', 'like', "%{$search}%")
+                        ->orWhere('synopsis', 'like', "%{$search}%");
+                });
+            });
+        $films = FilmGenreFilter::apply($query, $filters['genres'])
             ->withCount('reviews')
             ->withAvg('reviews', 'rating')
             ->latest()
-            ->paginate(20);
+            ->paginate(20)
+            ->withQueryString();
 
-        return view('admin.films.index', compact('films'));
+        return view('admin.films.index', compact('films', 'genres', 'filters'));
     }
 
     public function create()

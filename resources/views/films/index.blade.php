@@ -7,22 +7,9 @@
                 <p class="mt-2 max-w-xl text-sm text-sf-muted">Browse the community’s latest releases, favorites, and top-rated films.</p>
             </div>
 
-            <form method="GET" action="{{ route('films.index') }}" class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
-                <label class="sr-only" for="film-search">Search films</label>
-                <input id="film-search" name="q" value="{{ $filters['q'] ?? '' }}" type="search" placeholder="Search films..."
-                    class="min-w-0 rounded-xl border border-sf-border bg-sf-surface px-4 py-2.5 text-sm text-white placeholder:text-sf-muted focus:border-sf-blue focus:ring-sf-blue sm:w-64">
-                <label class="sr-only" for="film-genre">Filter by genre</label>
-                <select id="film-genre" name="genre" class="rounded-xl border border-sf-border bg-sf-surface px-3 py-2.5 text-sm text-white focus:border-sf-blue focus:ring-sf-blue">
-                    <option value="">All genres</option>
-                    @foreach ($genres as $genre)
-                        <option value="{{ $genre }}" @selected(($filters['genre'] ?? '') === $genre)>{{ $genre }}</option>
-                    @endforeach
-                </select>
-                <button type="submit" class="rounded-xl bg-sf-blue px-4 py-2.5 text-sm font-semibold text-white transition hover:brightness-110 focus:outline-none focus:ring-4 focus:ring-sf-blue/30">Search</button>
-                @if (request()->filled('q') || request()->filled('genre'))
-                    <a href="{{ route('films.index') }}" class="rounded-xl border border-sf-border px-4 py-2.5 text-center text-sm font-medium text-gray-300 transition hover:bg-white/5">Clear</a>
-                @endif
-            </form>
+            <div class="w-full sm:max-w-2xl">
+                @include('components.film-search-form', ['action' => route('films.index'), 'clearUrl' => route('films.index'), 'filters' => $filters, 'genres' => $genres])
+            </div>
         </div>
 
         @if (isset($searchResults))
