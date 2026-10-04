@@ -8,6 +8,7 @@ use App\Models\Film;
 use App\Services\PublicMediaStorage;
 use App\Services\TmdbService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class FilmController extends Controller
 {
@@ -58,6 +59,53 @@ class FilmController extends Controller
         }
 
         return redirect()->route('admin.films.index')->with('status', 'Film added!');
+    }
+
+    public function bulkStore(Request $request)
+    {
+        $request->merge([
+            'films' => json_decode((string) $request->input('films'), true),
+        ]);
+
+        $validated = $request->validate([
+            'films' => 'required|array|min:1|max:20',
+            'films.*.tmdb_id' => 'required|integer|min:1',
+            'films.*.title' => 'required|string|max:255',
+            'films.*.original_title' => 'nullable|string|max:255',
+            'films.*.synopsis' => 'nullable|string',
+            'films.*.genre' => 'nullable|string|max:100',
+            'films.*.release_date' => 'nullable|date',
+            'films.*.release_year' => 'nullable|integer|min:1900|max:'.(date('Y') + 5),
+            'films.*.cast' => 'nullable|string',
+            'films.*.poster_path' => ['nullable', 'string', 'max:255', 'regex:/^\/[A-Za-z0-9._-]+$/'],
+        ]);
+
+        $films = collect($validated['films'])->unique('tmdb_id')->values();
+        $created = 0;
+        $skipped = 0;
+
+        DB::transaction(function () use ($films, &$created, &$skipped): void {
+            foreach ($films as $filmData) {
+                if (Film::where('tmdb_id', $filmData['tmdb_id'])->exists()) {
+                    $skipped++;
+                    continue;
+                }
+
+                $posterPath = $filmData['poster_path'] ?? null;
+                unset($filmData['poster_path']);
+                $filmData['poster_path'] = $posterPath;
+                $film = Film::create($filmData);
+                SyncFilmCast::dispatch($film->id, null, $posterPath)->afterResponse();
+                $created++;
+            }
+        });
+
+        $message = $created.' film'.($created === 1 ? '' : 's').' added.';
+        if ($skipped > 0) {
+            $message .= ' '.$skipped.' already in the library and skipped.';
+        }
+
+        return redirect()->route('admin.films.index')->with('status', $message);
     }
 
     public function edit(Film $film)

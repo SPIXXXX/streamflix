@@ -86,6 +86,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('films/tmdb-search', [AdminFilmController::class, 'tmdbSearch'])->name('films.tmdb-search');
     Route::get('films/tmdb-results', [AdminTmdbLookupController::class, 'results'])->name('films.tmdb-results');
     Route::get('films/tmdb-details/{tmdbId}', [AdminTmdbLookupController::class, 'details'])->whereNumber('tmdbId')->name('films.tmdb-details');
+    Route::post('films/bulk-store', [AdminFilmController::class, 'bulkStore'])->name('films.bulk-store');
     Route::post('films/import', [AdminFilmController::class, 'import'])->name('films.import');
     Route::resource('films', AdminFilmController::class)->except(['show']);
     Route::get('films/{film}', [AdminFilmDetailController::class, 'show'])->name('films.show');
