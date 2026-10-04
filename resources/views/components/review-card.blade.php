@@ -4,7 +4,7 @@
     'showDate' => false,
 ])
 
-<article id="review-{{ $review->id }}" x-data="{ commentsOpen: @js((int) session('open_review_comments') === $review->id) }" class="mb-4 rounded-xl border border-sf-border bg-sf-surface/70 p-4 shadow-sm last:mb-0 sm:p-5">
+<article id="review-{{ $review->id }}" x-data="{ commentsOpen: @js((int) session('open_review_comments') === $review->id), editingReview: false, reviewMenuOpen: false }" class="mb-4 rounded-xl border border-sf-border bg-sf-surface/70 p-4 shadow-sm last:mb-0 sm:p-5">
     <header class="flex items-start gap-3">
         @if ($showAuthor)
             <x-user-avatar :user="$review->user" size="h-10 w-10" text-size="text-sm" />
@@ -22,9 +22,45 @@
                 <p class="mt-0.5 text-xs text-sf-muted"><a href="{{ route('films.show', $review->film) }}" class="hover:text-sf-blue">{{ $review->film->title }}</a></p>
             @endif
         </div>
+        @auth
+            @if (auth()->id() === $review->user_id)
+                <div class="relative shrink-0">
+                    <button type="button" @click="reviewMenuOpen = !reviewMenuOpen" :aria-expanded="reviewMenuOpen.toString()" aria-label="Review options" class="rounded-md p-1.5 text-sf-muted transition hover:bg-sf-bg hover:text-white focus:outline-none focus:ring-2 focus:ring-sf-blue/50">
+                        <svg class="h-4 w-4" aria-hidden="true" viewBox="0 0 20 20" fill="currentColor"><circle cx="4" cy="10" r="1.5"/><circle cx="10" cy="10" r="1.5"/><circle cx="16" cy="10" r="1.5"/></svg>
+                    </button>
+                    <div x-cloak x-show="reviewMenuOpen" @click.outside="reviewMenuOpen = false" class="absolute right-0 top-full z-20 mt-1 w-36 rounded-lg border border-sf-border bg-sf-surface p-1 shadow-xl">
+                        <button type="button" @click="editingReview = true; reviewMenuOpen = false" class="block w-full rounded-md px-3 py-2 text-left text-xs text-gray-200 hover:bg-sf-bg hover:text-white">Edit review</button>
+                        <form action="{{ route('reviews.destroy', $review) }}" method="POST" data-confirm data-confirm-title="Delete this review?" data-confirm-message="Your review and its reactions will be permanently removed." data-confirm-label="Delete review">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="block w-full rounded-md px-3 py-2 text-left text-xs text-rose-400 hover:bg-rose-500/10">Delete review</button>
+                        </form>
+                    </div>
+                </div>
+            @endif
+        @endauth
     </header>
 
-    <div class="ml-0 mt-3 sm:ml-[3.25rem]">
+    <div x-cloak x-show="editingReview" class="ml-0 mt-3 sm:ml-[3.25rem]">
+        <form action="{{ route('reviews.update', $review) }}" method="POST" class="space-y-3 rounded-lg border border-sf-border bg-sf-bg/60 p-3">
+            @csrf
+            @method('PATCH')
+            <div>
+                <label for="edit-review-rating-{{ $review->id }}" class="mb-1 block text-xs font-medium text-sf-muted">Rating (1–5)</label>
+                <input id="edit-review-rating-{{ $review->id }}" type="number" name="rating" min="1" max="5" required value="{{ $review->rating }}" class="w-24 rounded-lg border border-sf-border bg-sf-bg px-3 py-2 text-sm text-white focus:border-sf-blue focus:ring-sf-blue">
+            </div>
+            <div>
+                <label for="edit-review-comment-{{ $review->id }}" class="mb-1 block text-xs font-medium text-sf-muted">Review</label>
+                <textarea id="edit-review-comment-{{ $review->id }}" name="comment" rows="3" maxlength="2000" required class="w-full rounded-lg border border-sf-border bg-sf-bg px-3 py-2 text-sm text-white focus:border-sf-blue focus:ring-sf-blue">{{ $review->comment }}</textarea>
+            </div>
+            <div class="flex items-center gap-2">
+                <button type="submit" class="rounded-md bg-sf-blue px-3 py-1.5 text-xs font-semibold text-white hover:bg-sf-blue-dark">Save changes</button>
+                <button type="button" @click="editingReview = false" class="rounded-md px-3 py-1.5 text-xs text-sf-muted hover:bg-sf-bg hover:text-white">Cancel</button>
+            </div>
+        </form>
+    </div>
+
+    <div x-show="!editingReview" class="ml-0 mt-3 sm:ml-[3.25rem]">
         <div class="flex items-center gap-1" role="img" aria-label="Rated {{ $review->rating }} out of 5 stars">
             @for ($star = 1; $star <= 5; $star++)
                 <span class="text-base {{ $star <= $review->rating ? 'text-amber-400' : 'text-sf-muted/50' }}" aria-hidden="true">★</span>
