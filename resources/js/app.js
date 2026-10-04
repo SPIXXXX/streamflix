@@ -5,6 +5,7 @@ import './favorites.js';
 import './review-reactions.js';
 import './ui-feedback.js';
 import './admin-list-film-picker.js';
+import './mobile-nav.js';
 
 
 
