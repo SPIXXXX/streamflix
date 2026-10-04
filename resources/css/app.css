@@ -95,7 +95,27 @@ input[type="submit"][data-loading="true"]::after {
     100% { transform: scale(1) rotate(0); }
 }
 
+[data-carousel-slide]:not([hidden]) {
+    animation: film-carousel-enter 450ms ease-out both;
+}
+
+@keyframes film-carousel-enter {
+    from {
+        opacity: 0;
+        transform: translateX(0.75rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
+    [data-carousel-slide]:not([hidden]) {
+        animation: none;
+    }
+
     .reaction[data-animating="true"] [data-reaction-icon] {
         animation: none;
     }

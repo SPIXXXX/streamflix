@@ -49,7 +49,7 @@ class FilmController extends Controller
             return view('films.index', compact('genres', 'searchResults', 'filters'));
         }
         $recentlyAdded = $buildFilmQuery()->withCount('reviews')->withAvg('reviews', 'rating')
-            ->whereNotNull('release_date')->orderByDesc('release_date')->limit(12)->get();
+            ->orderByDesc('created_at')->orderByDesc('id')->limit(12)->get();
         $popularThisWeek = $buildFilmQuery()->withCount('reviews')->withAvg('reviews', 'rating')->withCount([
             'reviews as recent_reviews_count' => fn (Builder $query) => $query->where('created_at', '>=', $weekAgo),
             'favoritedBy as recent_favorites_count' => fn (Builder $query) => $query->where('film_favorites.created_at', '>=', $weekAgo),
@@ -59,6 +59,13 @@ class FilmController extends Controller
                 ->orWhereHas('favoritedBy', fn (Builder $favorites) => $favorites->where('film_favorites.created_at', '>=', $weekAgo))
                 ->orWhereHas('movieLists', fn (Builder $lists) => $lists->where('movie_lists.is_official', false)->where('list_films.created_at', '>=', $weekAgo));
         })->orderByRaw('recent_reviews_count + recent_favorites_count + recent_list_additions_count DESC')->orderByDesc('title')->limit(12)->get();
+        $carouselFilms = $popularThisWeek->take(3)
+            ->concat($recentlyAdded->take(2))
+            ->concat($popularThisWeek)
+            ->concat($recentlyAdded)
+            ->unique('id')
+            ->take(5)
+            ->values();
         $popularFilms = $buildFilmQuery()->withCount('reviews')->withAvg('reviews', 'rating')->withCount([
             'reviews as activity_reviews_count',
             'favoritedBy as activity_favorites_count',
@@ -76,7 +83,7 @@ class FilmController extends Controller
         $exploreFilms = $buildFilmQuery()->withCount('reviews')->withAvg('reviews', 'rating')
             ->orderByDesc('release_date')->orderByDesc('created_at')->limit(24)->get();
 
-        return view('films.index', compact('genres', 'recentlyAdded', 'popularThisWeek', 'popularFilms', 'highestRated', 'popularReviews', 'exploreFilms', 'filters'));
+        return view('films.index', compact('genres', 'recentlyAdded', 'popularThisWeek', 'carouselFilms', 'popularFilms', 'highestRated', 'popularReviews', 'exploreFilms', 'filters'));
     }
 
     public function collection(string $category): View
@@ -111,7 +118,7 @@ class FilmController extends Controller
 
         $baseQuery = Film::query()->withCount('reviews')->withAvg('reviews', 'rating');
         $films = match ($category) {
-            'recently-added' => $baseQuery->whereNotNull('release_date')->orderByDesc('release_date'),
+            'recently-added' => $baseQuery->orderByDesc('created_at')->orderByDesc('id'),
             'popular-this-week' => $baseQuery
                 ->withCount([
                     'reviews as recent_reviews_count' => fn (Builder $query) => $query->where('created_at', '>=', $weekAgo),
