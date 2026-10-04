@@ -6,13 +6,16 @@ use App\Jobs\SyncFilmCast;
 use App\Models\CastMember;
 use App\Models\Film;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 
 class AdminFilmDetailController extends Controller
 {
     public function show(Film $film): View
     {
-        if ($film->tmdb_id && ! $film->castMembers()->exists()) {
+        $castTablesAvailable = Schema::hasTable('cast_members') && Schema::hasTable('film_cast');
+
+        if ($castTablesAvailable && $film->tmdb_id && ! $film->castMembers()->exists()) {
             SyncFilmCast::dispatch($film->id)->afterResponse();
         }
 
@@ -24,14 +27,16 @@ class AdminFilmDetailController extends Controller
                     'reactions as disagree_count' => fn ($reactions) => $reactions->where('reaction', 'disagree'),
                 ]),
             'teasers',
-            'castMembers',
         ])->loadAvg('reviews', 'rating');
-        $cast = $film->castMembers->map(fn (CastMember $member): array => [
+        if ($castTablesAvailable) {
+            $film->load('castMembers');
+        }
+        $cast = $castTablesAvailable ? $film->castMembers->map(fn (CastMember $member): array => [
             'id' => $member->tmdb_id,
             'name' => $member->name,
             'character' => $member->pivot->character,
             'profile_url' => $member->filmProfileUrl(),
-        ])->all();
+        ])->all() : [];
         $userLists = auth()->user()->movieLists()
             ->where('is_official', false)
             ->withCount('films')

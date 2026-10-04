@@ -4,3 +4,7 @@
 @plugin "flowbite/plugin";
 @source "../views";
 @source "../../node_modules/flowbite";
+
+[x-cloak] {
+    display: none !important;
+}

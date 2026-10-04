@@ -13,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 
 class FilmController extends Controller
@@ -151,7 +152,9 @@ class FilmController extends Controller
 
     public function show(Film $film): View
     {
-        if ($film->tmdb_id && ! $film->castMembers()->exists()) {
+        $castTablesAvailable = Schema::hasTable('cast_members') && Schema::hasTable('film_cast');
+
+        if ($castTablesAvailable && $film->tmdb_id && ! $film->castMembers()->exists()) {
             SyncFilmCast::dispatch($film->id)->afterResponse();
         }
 
@@ -163,14 +166,16 @@ class FilmController extends Controller
                     'reactions as disagree_count' => fn (Builder $reactions) => $reactions->where('reaction', 'disagree'),
                 ]),
             'teasers',
-            'castMembers',
         ])->loadAvg('reviews', 'rating');
-        $cast = $film->castMembers->map(fn (CastMember $member): array => [
+        if ($castTablesAvailable) {
+            $film->load('castMembers');
+        }
+        $cast = $castTablesAvailable ? $film->castMembers->map(fn (CastMember $member): array => [
             'id' => $member->tmdb_id,
             'name' => $member->name,
             'character' => $member->pivot->character,
             'profile_url' => $member->filmProfileUrl(),
-        ])->all();
+        ])->all() : [];
         $userLists = auth()->user()?->movieLists()
             ->where('is_official', false)
             ->withCount('films')
@@ -204,6 +209,10 @@ class FilmController extends Controller
 
     public function castMember(Film $film, int $personId, TmdbService $tmdb): JsonResponse
     {
+        if (! Schema::hasTable('cast_members') || ! Schema::hasTable('film_cast')) {
+            return response()->json(['message' => 'Cast details are not available right now.'], 503);
+        }
+
         $filmCastMember = $film->castMembers()->where('tmdb_id', $personId)->first();
         $castMember = CastMember::where('tmdb_id', $personId)->first();
         $filmProfileUrl = $filmCastMember?->filmProfileUrl();

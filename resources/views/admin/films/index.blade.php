@@ -14,7 +14,7 @@
 
         <div class="mb-5 flex flex-col gap-3 lg:flex-row lg:items-center">
             <div class="w-full lg:max-w-3xl">
-                @include('components.film-search-form', ['action' => route('admin.films.index'), 'clearUrl' => route('admin.films.index'), 'filters' => $filters, 'genres' => $genres, 'accent' => 'red'])
+                @include('components.film-search-form', ['action' => route('admin.films.index'), 'clearUrl' => route('admin.films.index'), 'filters' => $filters, 'genres' => $genres])
             </div>
             <span class="text-sm text-sf-muted lg:ml-auto">{{ $films->total() }} films</span>
         </div>
