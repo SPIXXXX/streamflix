@@ -2,7 +2,6 @@
     <div class="mb-4 flex items-end justify-between gap-4">
         <div>
             <h2 id="{{ $id }}-title" class="text-xl font-semibold text-white sm:text-2xl">{{ $title }}</h2>
-            <p class="mt-1 text-sm text-sf-muted">{{ $description }}</p>
         </div>
         <a href="{{ route('films.collections', $viewAll) }}" class="shrink-0 rounded-lg px-2 py-2 text-sm font-semibold text-sf-blue transition hover:text-white focus:outline-none focus:ring-2 focus:ring-sf-blue/50">View All <span aria-hidden="true">→</span></a>
     </div>

@@ -85,13 +85,16 @@
                                     @endif
                                 </div>
                                 <p x-show="!editing" class="mt-0.5 whitespace-pre-line break-words text-sm leading-5 text-gray-300">{{ $reviewComment->body }}</p>
-                                <form x-cloak x-show="editing" action="{{ route('reviews.comments.update', $reviewComment) }}" method="POST" class="mt-2 space-y-2">
+                                <form x-cloak x-show="editing" x-data="{ saving: false }" @submit="saving = true" action="{{ route('reviews.comments.update', $reviewComment) }}" method="POST" class="mt-2 space-y-2">
                                     @csrf
                                     @method('PATCH')
                                     <label class="sr-only" for="edit-review-comment-{{ $reviewComment->id }}">Edit your comment</label>
                                     <textarea id="edit-review-comment-{{ $reviewComment->id }}" name="body" rows="2" maxlength="2000" required class="w-full rounded-lg border border-sf-border bg-sf-bg px-3 py-2 text-sm text-white focus:border-sf-blue focus:ring-sf-blue">{{ $reviewComment->body }}</textarea>
                                     <div class="flex items-center gap-2">
-                                        <button type="submit" class="rounded-md bg-sf-blue px-3 py-1.5 text-xs font-semibold text-white hover:bg-sf-blue-dark">Save</button>
+                                        <button type="submit" :disabled="saving" :aria-busy="saving" class="inline-flex items-center gap-1.5 rounded-md bg-sf-blue px-3 py-1.5 text-xs font-semibold text-white hover:bg-sf-blue-dark disabled:cursor-wait disabled:opacity-80">
+                                            <svg x-cloak x-show="saving" class="h-3.5 w-3.5 animate-spin" aria-hidden="true" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 0 1 8-8V0C5.4 0 0 5.4 0 12h4z" transform="translate(0 4)"/></svg>
+                                            <span x-text="saving ? 'Saving…' : 'Save'">Save</span>
+                                        </button>
                                         <button type="button" @click="editing = false" class="rounded-md px-3 py-1.5 text-xs text-sf-muted hover:bg-sf-bg hover:text-white">Cancel</button>
                                     </div>
                                 </form>

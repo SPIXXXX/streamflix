@@ -2,9 +2,7 @@
     <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div class="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
-                <p class="mb-2 text-xs font-semibold uppercase tracking-[0.24em] text-sf-blue">Discover something good</p>
                 <h1 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">Films</h1>
-                <p class="mt-2 max-w-xl text-sm text-sf-muted">Browse the community’s latest releases, favorites, and top-rated films.</p>
             </div>
 
             <div class="w-full sm:max-w-2xl">
@@ -36,7 +34,6 @@
                 <div class="mb-4 flex items-end justify-between gap-4">
                     <div>
                         <h2 id="popular-reviews-title" class="text-xl font-semibold text-white sm:text-2xl">Popular Reviews This Week</h2>
-                        <p class="mt-1 text-sm text-sf-muted">Reviews receiving the most agrees in the last 7 days.</p>
                     </div>
                     <a href="{{ route('films.collections', 'popular-reviews-this-week') }}" class="shrink-0 rounded-lg px-2 py-2 text-sm font-semibold text-sf-blue transition hover:text-white focus:outline-none focus:ring-2 focus:ring-sf-blue/50">View All <span aria-hidden="true">→</span></a>
                 </div>
@@ -51,23 +48,23 @@
                 @endif
             </section>
             @include('films._shelf', [
-                'id' => 'recently-added', 'title' => 'Recently Added', 'description' => 'Sorted by the release date provided by TMDB.',
+                'id' => 'recently-added', 'title' => 'Recently Added',
                 'films' => $recentlyAdded, 'emptyMessage' => 'No recently added movies are available.', 'viewAll' => 'recently-added',
             ])
             @include('films._shelf', [
-                'id' => 'popular-this-week', 'title' => 'Popular This Week', 'description' => 'Based on activity from the last 7 days.',
+                'id' => 'popular-this-week', 'title' => 'Popular This Week',
                 'films' => $popularThisWeek, 'emptyMessage' => 'Not enough recent activity to determine popular films yet.', 'viewAll' => 'popular-this-week',
             ])
             @include('films._shelf', [
-                'id' => 'popular-films', 'title' => 'Popular Films', 'description' => 'Ranked by activity from members on this site.',
+                'id' => 'popular-films', 'title' => 'Popular Films',
                 'films' => $popularFilms, 'emptyMessage' => 'No popular movies are available yet.', 'viewAll' => 'popular-movies',
             ])
             @include('films._shelf', [
-                'id' => 'highest-rated', 'title' => 'Highest Rated', 'description' => 'Member ratings, with at least two ratings per film.',
+                'id' => 'highest-rated', 'title' => 'Highest Rated',
                 'films' => $highestRated, 'emptyMessage' => 'Films need at least two member ratings to appear here.', 'viewAll' => 'highest-rated',
             ])
             @include('films._shelf', [
-                'id' => 'explore-films', 'title' => 'Explore Films', 'description' => 'Browse the catalogue.',
+                'id' => 'explore-films', 'title' => 'Explore Films',
                 'films' => $exploreFilms, 'emptyMessage' => 'No films have been added yet.', 'viewAll' => 'all',
             ])
         @endif
