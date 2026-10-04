@@ -165,7 +165,7 @@ class FilmController extends Controller
                 ->with([
                     'user',
                     'comments.user',
-                    'reactions' => fn (Builder $reactions) => $reactions->where('user_id', Auth::id()),
+                    'reactions' => fn ($reactions) => $reactions->where('user_id', Auth::id()),
                 ])
                 ->withCount([
                     'reactions as agree_count' => fn (Builder $reactions) => $reactions->where('reaction', 'agree'),
