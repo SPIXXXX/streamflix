@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Film;
 use App\Services\TmdbService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
 
 class AdminFilmDetailController extends Controller
@@ -20,7 +21,11 @@ class AdminFilmDetailController extends Controller
             'teasers',
         ])->loadAvg('reviews', 'rating');
         $cast = $film->tmdb_id ? $tmdb->castMembers((int) $film->tmdb_id) : [];
-        $userLists = auth()->user()->movieLists()->where('is_official', false)->withCount('films')->get();
+        $userLists = auth()->user()->movieLists()
+            ->where('is_official', false)
+            ->withCount('films')
+            ->withExists(['films as contains_film' => fn (Builder $query) => $query->whereKey($film->id)])
+            ->get();
         $isFavorite = auth()->user()->favoriteFilms()->whereKey($film->id)->exists();
 
         return view('admin.films.show', compact('film', 'cast', 'userLists', 'isFavorite'));

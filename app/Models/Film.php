@@ -85,12 +85,12 @@ class Film extends Model
             return $posterPath;
         }
 
-        if (Storage::disk('public')->exists($posterPath)) {
-            return Storage::disk('public')->url($posterPath);
+        if (str_starts_with($posterPath, '/')) {
+            return app(TmdbService::class)->posterUrl($posterPath, 'w500');
         }
 
-        return str_starts_with($posterPath, '/')
-            ? app(TmdbService::class)->posterUrl($posterPath, 'w500')
+        return Storage::disk('public')->exists($posterPath)
+            ? Storage::disk('public')->url($posterPath)
             : null;
     }
 }

@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Film;
+use App\Services\PublicMediaStorage;
 use App\Services\TmdbService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 
 class FilmController extends Controller
 {
@@ -40,17 +40,15 @@ class FilmController extends Controller
             'cast' => 'nullable|string',
             'tmdb_id' => 'nullable|integer',
             'poster' => 'nullable|image|max:2048',
-            'tmdb_poster_url' => 'nullable|url',
+            'tmdb_poster_path' => ['nullable', 'string', 'max:255', 'regex:/^\/[A-Za-z0-9._-]+$/'],
         ]);
 
         if ($request->hasFile('poster')) {
-            $validated['poster_path'] = $request->file('poster')->store('posters', 'public');
-        } elseif (! empty($validated['tmdb_poster_url'])) {
-            $contents = Http::get($validated['tmdb_poster_url'])->throw()->body();
-            $filename = 'posters/'.($validated['tmdb_id'] ?? uniqid()).'-'.now()->timestamp.'.jpg';
-            \Storage::disk('public')->put($filename, $contents);
-            $validated['poster_path'] = $filename;
+            $validated['poster_path'] = app(PublicMediaStorage::class)->store($request->file('poster'), 'posters');
+        } elseif (! empty($validated['tmdb_poster_path'])) {
+            $validated['poster_path'] = $validated['tmdb_poster_path'];
         }
+        unset($validated['tmdb_poster_path']);
 
         Film::create($validated);
 
@@ -74,17 +72,15 @@ class FilmController extends Controller
             'cast' => 'nullable|string',
             'tmdb_id' => 'nullable|integer',
             'poster' => 'nullable|image|max:2048',
-            'tmdb_poster_url' => 'nullable|url',
+            'tmdb_poster_path' => ['nullable', 'string', 'max:255', 'regex:/^\/[A-Za-z0-9._-]+$/'],
         ]);
 
         if ($request->hasFile('poster')) {
-            $validated['poster_path'] = $request->file('poster')->store('posters', 'public');
-        } elseif (! empty($validated['tmdb_poster_url'])) {
-            $contents = Http::get($validated['tmdb_poster_url'])->throw()->body();
-            $filename = 'posters/'.($validated['tmdb_id'] ?? $film->id).'-'.now()->timestamp.'.jpg';
-            \Storage::disk('public')->put($filename, $contents);
-            $validated['poster_path'] = $filename;
+            $validated['poster_path'] = app(PublicMediaStorage::class)->store($request->file('poster'), 'posters');
+        } elseif (! empty($validated['tmdb_poster_path'])) {
+            $validated['poster_path'] = $validated['tmdb_poster_path'];
         }
+        unset($validated['tmdb_poster_path']);
 
         $film->update($validated);
 
@@ -122,6 +118,7 @@ class FilmController extends Controller
             'release_date' => $details['release_date'] ?: null,
             'release_year' => ! empty($details['release_date']) ? substr($details['release_date'], 0, 4) : null,
             'cast' => collect($details['credits']['cast'] ?? [])->take(6)->pluck('name')->join(', '),
+            'poster_path' => $details['poster_path'] ?? $movie['poster_path'] ?? null,
             'poster_url' => $this->tmdb->posterUrl($details['poster_path'] ?? $movie['poster_path'] ?? null),
         ]);
     }
@@ -163,16 +160,9 @@ class FilmController extends Controller
             'release_year' => $details['release_date'] ? substr($details['release_date'], 0, 4) : null,
             'release_date' => $details['release_date'] ?: null,
             'cast' => collect($details['credits']['cast'] ?? [])->take(6)->pluck('name')->join(', '),
+            'poster_path' => $details['poster_path'] ?? null,
         ]);
         $film->syncTmdbKeywords(data_get($details, 'keywords.keywords', []));
-
-        if (! empty($details['poster_path'])) {
-            $posterUrl = $this->tmdb->posterUrl($details['poster_path'], 'w500');
-            $contents = Http::get($posterUrl)->body();
-            $path = 'posters/'.$film->id.'.jpg';
-            \Storage::disk('public')->put($path, $contents);
-            $film->update(['poster_path' => $path]);
-        }
 
         return redirect()->route('admin.films.index')->with('status', "Imported \"{$film->title}\"!");
     }

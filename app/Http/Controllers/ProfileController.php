@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Services\PublicMediaStorage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -45,11 +44,8 @@ class ProfileController extends Controller
         }
 
         if ($avatar) {
-            if ($request->user()->avatar_path && ! Str::startsWith($request->user()->avatar_path, 'https://')) {
-                Storage::disk('public')->delete($request->user()->avatar_path);
-            }
-
-            $request->user()->avatar_path = $avatar->store('avatars', 'public');
+            app(PublicMediaStorage::class)->delete($request->user()->avatar_path);
+            $request->user()->avatar_path = app(PublicMediaStorage::class)->store($avatar, 'avatars');
         }
 
         $request->user()->save();

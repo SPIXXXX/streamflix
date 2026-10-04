@@ -14,7 +14,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+use App\Services\PublicMediaStorage;
 use Spatie\Permission\Traits\HasRoles;
 
 #[Fillable(['name', 'email', 'password', 'status', 'avatar_path', 'is_featured'])]
@@ -50,15 +50,15 @@ class User extends Authenticatable
                 : null;
         }
 
-        return Storage::disk('public')->url($this->avatar_path);
+        return Storage::disk('public')->exists($this->avatar_path)
+            ? Storage::disk('public')->url($this->avatar_path)
+            : null;
     }
 
     protected static function booted(): void
     {
         static::deleting(function (User $user): void {
-            if ($user->avatar_path && ! Str::startsWith($user->avatar_path, 'https://')) {
-                Storage::disk('public')->delete($user->avatar_path);
-            }
+            app(PublicMediaStorage::class)->delete($user->avatar_path);
         });
     }
 

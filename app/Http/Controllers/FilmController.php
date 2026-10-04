@@ -155,7 +155,11 @@ class FilmController extends Controller
             'teasers',
         ])->loadAvg('reviews', 'rating');
         $cast = $film->tmdb_id ? $tmdb->castMembers((int) $film->tmdb_id) : [];
-        $userLists = auth()->user()?->movieLists()->where('is_official', false)->withCount('films')->get() ?? collect();
+        $userLists = auth()->user()?->movieLists()
+            ->where('is_official', false)
+            ->withCount('films')
+            ->withExists(['films as contains_film' => fn (Builder $query) => $query->whereKey($film->id)])
+            ->get() ?? collect();
         $isFavorite = auth()->user()?->favoriteFilms()->whereKey($film->id)->exists() ?? false;
 
         return view('films.show', compact('film', 'cast', 'userLists', 'isFavorite'));

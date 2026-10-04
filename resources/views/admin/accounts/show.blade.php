@@ -107,8 +107,8 @@
                     <div class="grid gap-3">
                         @foreach ($reviews as $review)
                             <article class="flex gap-4 rounded-2xl border border-sf-border bg-sf-surface p-4 sm:p-5">
-                                @if ($review->film?->poster_path)
-                                    <img src="{{ \Illuminate\Support\Facades\Storage::url($review->film->poster_path) }}" alt="{{ $review->film->title }} poster" loading="lazy" class="h-24 w-16 shrink-0 rounded-lg border border-sf-border object-cover sm:h-28 sm:w-20">
+                                @if ($review->film)
+                                    <x-film-poster-image :film="$review->film" container-class="h-24 w-16 shrink-0 rounded-lg border border-sf-border sm:h-28 sm:w-20" :alt="$review->film->title.' poster'" />
                                 @else
                                     <div class="flex h-24 w-16 shrink-0 items-center justify-center rounded-lg border border-sf-border bg-sf-bg text-xl text-sf-muted sm:h-28 sm:w-20" aria-hidden="true">▶</div>
                                 @endif

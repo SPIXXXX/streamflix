@@ -53,7 +53,7 @@
 
         function fillFilmForm(film) {
             document.getElementById('tmdb_id').value = film.tmdb_id ?? '';
-            document.getElementById('tmdb_poster_url').value = film.poster_url ?? '';
+            document.getElementById('tmdb_poster_path').value = film.poster_path ?? '';
             document.getElementById('title').value = film.title ?? '';
             document.getElementById('original_title').value = film.original_title ?? '';
             document.getElementById('synopsis').value = film.synopsis ?? '';
@@ -71,6 +71,7 @@
                 button.type = 'button';
                 button.dataset.tmdbId = film.tmdb_id;
                 button.dataset.posterUrl = film.poster_url ?? '';
+                button.dataset.posterPath = film.poster_path ?? '';
                 button.className = 'flex gap-3 rounded-lg border border-sf-border bg-[#100b17] p-3 text-left transition hover:border-red-500/60 hover:bg-white/5';
 
                 const imageWrap = document.createElement('div');
@@ -148,7 +149,7 @@
 
             const posterUrl = button.dataset.posterUrl || null;
             document.getElementById('tmdb_id').value = button.dataset.tmdbId;
-            document.getElementById('tmdb_poster_url').value = posterUrl ?? '';
+            document.getElementById('tmdb_poster_path').value = button.dataset.posterPath || '';
             showPoster(posterUrl);
             tmdbStatus.textContent = 'Loading full movie details...';
 

@@ -1,6 +1,6 @@
 <input type="hidden" name="tmdb_id" id="tmdb_id" value="{{ old('tmdb_id', $film->tmdb_id ?? '') }}">
 <input type="hidden" name="original_title" id="original_title" value="{{ old('original_title', $film->original_title ?? '') }}">
-<input type="hidden" name="tmdb_poster_url" id="tmdb_poster_url" value="{{ old('tmdb_poster_url', '') }}">
+<input type="hidden" name="tmdb_poster_path" id="tmdb_poster_path" value="{{ old('tmdb_poster_path', isset($film) && str_starts_with((string) $film->poster_path, '/') ? $film->poster_path : '') }}">
 
 <div class="grid gap-4 md:grid-cols-2">
     <div class="md:col-span-2">

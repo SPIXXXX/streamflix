@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\PublicMediaStorage;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -41,7 +42,9 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'avatar_path' => $request->file('avatar')?->store('avatars', 'public'),
+            'avatar_path' => $request->file('avatar')
+                ? app(PublicMediaStorage::class)->store($request->file('avatar'), 'avatars')
+                : null,
         ]);
 
         event(new Registered($user));

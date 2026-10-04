@@ -6,6 +6,7 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 
 class TmdbService
 {
@@ -24,14 +25,19 @@ class TmdbService
 
     public function search(string $query): array
     {
-        $response = $this->client()->get('/search/movie', ['query' => $query]);
+        $normalizedQuery = Str::lower(Str::squish($query));
+        $cacheKey = 'tmdb.search.movie.'.sha1($normalizedQuery);
 
-        return $response->json('results') ?? [];
+        return Cache::remember($cacheKey, now()->addMinutes(10), function () use ($normalizedQuery): array {
+            $response = $this->client()->timeout(5)->get('/search/movie', ['query' => $normalizedQuery]);
+
+            return $response->json('results') ?? [];
+        });
     }
 
     public function details(int $tmdbId): array
     {
-        $response = $this->client()->get("/movie/{$tmdbId}", [
+        $response = $this->client()->timeout(8)->get("/movie/{$tmdbId}", [
             'append_to_response' => 'credits,keywords',
         ]);
 
@@ -88,33 +94,51 @@ class TmdbService
 
     public function castMembers(int $tmdbId, int $limit = 12): array
     {
-        return Cache::remember("tmdb.movie.{$tmdbId}.cast", now()->addDay(), function () use ($tmdbId, $limit): array {
-            try {
-                $details = $this->details($tmdbId);
-            } catch (ConnectionException) {
-                return [];
-            }
+        $cacheKey = "tmdb.movie.{$tmdbId}.cast.v2";
+        $cachedCast = Cache::get($cacheKey);
+        if (is_array($cachedCast)) {
+            return $cachedCast;
+        }
 
-            return collect($details['credits']['cast'] ?? [])
-                ->sortBy('order')
-                ->take($limit)
-                ->map(fn (array $member): array => [
-                    'id' => (int) ($member['id'] ?? 0),
-                    'name' => $member['name'] ?? 'Unknown cast member',
-                    'character' => $member['character'] ?? null,
-                    'profile_url' => $this->posterUrl($member['profile_path'] ?? null, 'w185'),
-                ])
-                ->filter(fn (array $member): bool => $member['id'] > 0)
-                ->values()
-                ->all();
-        });
+        try {
+            $response = $this->client()->timeout(8)->get("/movie/{$tmdbId}", [
+                'append_to_response' => 'credits',
+            ]);
+        } catch (ConnectionException) {
+            return [];
+        }
+
+        if (! $response->successful() || ! is_array(data_get($response->json(), 'credits.cast'))) {
+            return [];
+        }
+
+        $cast = collect($response->json('credits.cast'))
+            ->sortBy('order')
+            ->take($limit)
+            ->map(fn (array $member): array => [
+                'id' => (int) ($member['id'] ?? 0),
+                'name' => $member['name'] ?? 'Unknown cast member',
+                'character' => $member['character'] ?? null,
+                'profile_url' => $this->posterUrl($member['profile_path'] ?? null, 'w185'),
+            ])
+            ->filter(fn (array $member): bool => $member['id'] > 0)
+            ->values()
+            ->all();
+
+        Cache::put($cacheKey, $cast, now()->addDay());
+
+        return $cast;
     }
 
     public function personDetails(int $personId): ?array
     {
         return Cache::remember("tmdb.person.{$personId}", now()->addDay(), function () use ($personId): ?array {
             try {
-                $person = $this->client()->get("/person/{$personId}")->json();
+                $response = $this->client()->timeout(8)->get("/person/{$personId}");
+                if (! $response->successful()) {
+                    return null;
+                }
+                $person = $response->json();
             } catch (ConnectionException) {
                 return null;
             }

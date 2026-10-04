@@ -16,7 +16,7 @@ document.addEventListener('click', async (event) => {
     const facts = document.getElementById('cast-member-facts');
     const biography = document.getElementById('cast-member-biography');
 
-    if (!photo || !name || !biography) {
+    if (!photo || !photoPlaceholder || !name || !character || !department || !facts || !biography) {
         return;
     }
 
@@ -25,6 +25,7 @@ document.addEventListener('click', async (event) => {
     department.textContent = '';
     facts.replaceChildren();
     biography.textContent = 'Loading cast details…';
+    photoPlaceholder.textContent = (button.dataset.castName || '?').charAt(0).toUpperCase();
     photo.onerror = () => {
         photo.classList.add('hidden');
         photoPlaceholder.classList.remove('hidden');
@@ -38,7 +39,6 @@ document.addEventListener('click', async (event) => {
     } else {
         photo.removeAttribute('src');
         photo.classList.add('hidden');
-        photoPlaceholder.textContent = (button.dataset.castName || '?').charAt(0).toUpperCase();
         photoPlaceholder.classList.remove('hidden');
     }
 

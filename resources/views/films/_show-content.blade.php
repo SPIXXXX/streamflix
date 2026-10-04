@@ -1,9 +1,7 @@
     <div class="max-w-5xl mx-auto py-8 px-4">
         <div class="flex flex-col md:flex-row gap-8">
             <div class="w-full md:w-64 shrink-0">
-                @if ($film->poster_path)
-                    <img src="{{ Storage::url($film->poster_path) }}" class="rounded-lg shadow-lg w-full">
-                @endif
+                <x-film-poster-image :film="$film" container-class="aspect-[2/3] w-full overflow-hidden rounded-lg shadow-lg" :alt="$film->title.' poster'" loading="eager" />
             </div>
 
             <div class="flex-1">
@@ -43,7 +41,7 @@
                                         <input type="hidden" name="film_id" value="{{ $film->id }}">
                                         <button type="submit" class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm text-gray-200 transition hover:bg-sf-surface-light hover:text-white">
                                             <span class="truncate">{{ $movieList->title }}</span>
-                                            @if ($movieList->films()->whereKey($film->id)->exists())
+                                            @if ($movieList->contains_film)
                                                 <span class="ml-2 shrink-0 text-xs text-sf-blue">Added</span>
                                             @endif
                                         </button>
@@ -69,7 +67,7 @@
             </div>
 
             @if (count($cast))
-                <div class="flex gap-4 overflow-x-auto pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                <div class="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Cast members">
                     @foreach ($cast as $castMember)
                         <button type="button"
                                 data-cast-member
@@ -80,7 +78,8 @@
                                 data-cast-url="{{ route('films.cast-member', ['personId' => $castMember['id']]) }}"
                                 data-modal-target="cast-member-modal"
                                 data-modal-toggle="cast-member-modal"
-                                class="group flex w-24 shrink-0 flex-col items-center text-center focus:outline-none focus:ring-2 focus:ring-sf-blue rounded-xl">
+                                aria-label="View {{ $castMember['name'] }}{{ !empty($castMember['character']) ? ', playing '.$castMember['character'] : '' }}"
+                                class="group flex w-24 shrink-0 snap-start flex-col items-center rounded-xl p-1 text-center transition hover:bg-sf-surface focus:outline-none focus-visible:ring-2 focus-visible:ring-sf-blue">
                             @if ($castMember['profile_url'])
                                 <img src="{{ $castMember['profile_url'] }}" alt="{{ $castMember['name'] }}" loading="lazy" class="h-20 w-20 rounded-full border-2 border-sf-border object-cover shadow-lg transition group-hover:border-sf-blue group-hover:scale-105">
                             @else
@@ -100,9 +99,9 @@
             @endif
         </section>
 
-        <div id="cast-member-modal" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden">
-            <div class="relative mx-auto my-8 w-full max-w-2xl p-4">
-                <div class="relative rounded-xl border border-sf-border bg-sf-surface shadow-2xl">
+        <div id="cast-member-modal" tabindex="-1" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="cast-member-name" class="hidden fixed inset-0 z-50 h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden bg-black/70 p-4">
+            <div class="relative mx-auto my-8 w-full max-w-2xl">
+                <div class="relative overflow-hidden rounded-2xl border border-sf-border bg-sf-surface shadow-2xl shadow-black/50">
                     <button type="button" data-modal-hide="cast-member-modal" aria-label="Close cast profile" class="absolute end-3 top-3 z-10 inline-flex h-9 w-9 items-center justify-center rounded-lg text-sf-muted hover:bg-sf-surface-light hover:text-white focus:outline-none focus:ring-2 focus:ring-sf-blue">
                         <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 12 12M13 1 1 13"/></svg>
                     </button>

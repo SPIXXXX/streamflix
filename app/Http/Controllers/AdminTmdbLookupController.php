@@ -23,7 +23,8 @@ class AdminTmdbLookupController extends Controller
                 'synopsis' => $movie['overview'] ?? null,
                 'release_date' => $movie['release_date'] ?? null,
                 'release_year' => ! empty($movie['release_date']) ? substr($movie['release_date'], 0, 4) : null,
-                'poster_url' => $this->tmdb->posterUrl($movie['poster_path'] ?? null),
+                'poster_path' => $movie['poster_path'] ?? null,
+                'poster_url' => $this->tmdb->posterUrl($movie['poster_path'] ?? null, 'w185'),
             ])
             ->values();
 
@@ -47,6 +48,7 @@ class AdminTmdbLookupController extends Controller
             'release_date' => $details['release_date'] ?? null,
             'release_year' => ! empty($details['release_date']) ? substr($details['release_date'], 0, 4) : null,
             'cast' => collect($details['credits']['cast'] ?? [])->take(6)->pluck('name')->join(', '),
+            'poster_path' => $details['poster_path'] ?? null,
             'poster_url' => $this->tmdb->posterUrl($details['poster_path'] ?? null),
         ]);
     }
