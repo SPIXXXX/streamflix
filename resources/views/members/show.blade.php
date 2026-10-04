@@ -8,10 +8,18 @@
 
         <header class="mt-5 overflow-hidden rounded-3xl border border-sf-border bg-gradient-to-br from-sf-surface via-sf-surface to-sf-bg p-6 shadow-xl sm:p-9">
             <div class="flex flex-col gap-6 sm:flex-row sm:items-center">
-                <x-user-avatar :user="$user" size="h-24 w-24" text-size="text-3xl" />
+                <span class="relative inline-flex self-start">
+                    <x-user-avatar :user="$user" size="h-24 w-24" text-size="text-3xl" />
+                    @if ($user->is_online)
+                        <span role="img" aria-label="Online" title="Online" class="absolute bottom-1 right-1 h-5 w-5 rounded-full border-4 border-sf-surface bg-emerald-400"></span>
+                    @endif
+                </span>
                 <div class="min-w-0 flex-1">
                     <div class="flex flex-wrap items-center gap-3">
                         <h1 class="text-3xl font-bold tracking-tight text-white">{{ $user->name }}</h1>
+                        @if ($user->is_online)
+                            <span class="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-300"><span class="h-2 w-2 rounded-full bg-emerald-400" aria-hidden="true"></span>Online now</span>
+                        @endif
                         @if ($user->is_featured)
                             <span class="rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1 text-xs font-semibold text-amber-300">Featured member</span>
                         @endif

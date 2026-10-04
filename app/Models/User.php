@@ -35,6 +35,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_featured' => 'boolean',
+            'latest_session_activity' => 'integer',
         ];
     }
 
@@ -104,7 +105,19 @@ class User extends Authenticatable
             ->withCount('reviews')
             ->withAvg('reviews', 'rating')
             ->withCount(['movieLists as public_lists_count' => fn (Builder $lists) => $lists->where('is_public', true)])
+            ->selectSub(
+                DB::table('sessions')
+                    ->selectRaw('MAX(last_activity)')
+                    ->whereColumn('sessions.user_id', 'users.id'),
+                'latest_session_activity',
+            )
             ->selectSub($receivedReactions, 'received_reactions_count');
+    }
+
+    public function getIsOnlineAttribute(): bool
+    {
+        return $this->latest_session_activity !== null
+            && $this->latest_session_activity >= now()->subMinutes(5)->timestamp;
     }
 
     public function scopeMostActive(Builder $query, int $limit = 6): Builder
