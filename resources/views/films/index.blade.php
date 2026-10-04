@@ -40,9 +40,11 @@
                 @if ($popularReviews->isEmpty())
                     <div class="rounded-2xl border border-sf-border bg-sf-surface/70 px-5 py-8 text-sm text-sf-muted">No popular reviews this week yet.</div>
                 @else
-                    <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                    <div class="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:px-0" role="region" aria-label="Popular reviews this week" tabindex="0">
                         @foreach ($popularReviews as $review)
-                            @include('films._popular-review-card', ['review' => $review])
+                            <div class="w-[85vw] max-w-sm shrink-0 snap-start">
+                                @include('films._popular-review-card', ['review' => $review])
+                            </div>
                         @endforeach
                     </div>
                 @endif
