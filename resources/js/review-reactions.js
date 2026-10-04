@@ -44,8 +44,8 @@ document.addEventListener('click', async (event) => {
         }
 
         const selected = data.status !== 'removed';
-        const activeColor = button.dataset.reaction === 'agree' ? 'text-sf-blue' : 'text-rose-300';
-        const activeBackground = button.dataset.reaction === 'agree' ? 'bg-sf-blue/10' : 'bg-rose-500/10';
+        const activeColor = button.dataset.reaction === 'agree' ? 'text-emerald-400' : 'text-rose-400';
+        const activeBackground = button.dataset.reaction === 'agree' ? 'bg-emerald-500/10' : 'bg-rose-500/10';
         button.dataset.active = String(selected);
         button.classList.toggle(activeColor, selected);
         button.classList.toggle(activeBackground, selected);
@@ -53,7 +53,7 @@ document.addEventListener('click', async (event) => {
             const otherReaction = button.parentElement.querySelector(`button.reaction[data-review-id="${reviewId}"]:not([data-reaction="${button.dataset.reaction}"])`);
             if (otherReaction) {
                 otherReaction.dataset.active = 'false';
-                otherReaction.classList.remove('text-sf-blue', 'text-rose-300', 'bg-sf-blue/10', 'bg-rose-500/10');
+                otherReaction.classList.remove('text-emerald-400', 'text-rose-400', 'bg-emerald-500/10', 'bg-rose-500/10');
             }
         }
     } catch (error) {
