@@ -19,6 +19,9 @@ class ReviewCommentController extends Controller
             'body' => $validated['body'],
         ]);
 
-        return back()->withFragment('review-'.$review->id)->with('status', 'Your comment was posted.');
+        return back()
+            ->withFragment('review-'.$review->id)
+            ->with('open_review_comments', $review->id)
+            ->with('status', 'Your comment was posted.');
     }
 }

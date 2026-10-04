@@ -30,7 +30,7 @@ class Review extends Model
 
     public function comments(): HasMany
     {
-        return $this->hasMany(ReviewComment::class)->latest();
+        return $this->hasMany(ReviewComment::class)->oldest();
     }
 
     public function agreeCount(): int

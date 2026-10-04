@@ -4,7 +4,7 @@
     'showDate' => false,
 ])
 
-<article id="review-{{ $review->id }}" class="rounded-xl border border-sf-border bg-sf-surface/70 p-4 sm:p-5">
+<article id="review-{{ $review->id }}" x-data="{ commentsOpen: @js((int) session('open_review_comments') === $review->id) }" class="mb-4 rounded-xl border border-sf-border bg-sf-surface/70 p-4 shadow-sm last:mb-0 sm:p-5">
     <header class="flex items-start gap-3">
         @if ($showAuthor)
             <x-user-avatar :user="$review->user" size="h-10 w-10" text-size="text-sm" />
@@ -49,14 +49,14 @@
             @else
                 <a href="{{ route('login') }}" class="inline-flex items-center gap-1.5 rounded-md border border-sf-border bg-sf-bg/70 px-2.5 py-1.5 font-medium text-sf-muted hover:text-emerald-400" aria-label="Log in to react to this review"><svg class="h-3.5 w-3.5" aria-hidden="true" viewBox="0 0 20 20" fill="currentColor"><path d="M7.5 8.5 10.6 2c.8.2 1.4 1 1.4 1.9v3.6h3.2a2 2 0 0 1 2 2l-.8 6a2 2 0 0 1-2 1.8H7.5V8.5ZM2 8.5h3.5v9H2v-9Z"/></svg>{{ $review->agree_count }}</a>
             @endauth
-            <a href="#review-comments-{{ $review->id }}" class="inline-flex items-center gap-1.5 rounded-md border border-sf-border bg-sf-bg/70 px-2.5 py-1.5 font-medium text-sf-blue transition hover:bg-sf-blue/10" aria-label="View comments">
+            <button type="button" @click="commentsOpen = !commentsOpen" :aria-expanded="commentsOpen.toString()" aria-controls="review-comments-{{ $review->id }}" class="inline-flex items-center gap-1.5 rounded-md border border-sf-border bg-sf-bg/70 px-2.5 py-1.5 font-medium text-sf-blue transition hover:bg-sf-blue/10">
                 <svg class="h-3.5 w-3.5" aria-hidden="true" viewBox="0 0 20 20" fill="none"><path d="M3 4.75A2.75 2.75 0 0 1 5.75 2h8.5A2.75 2.75 0 0 1 17 4.75v5.5A2.75 2.75 0 0 1 14.25 13H9l-4.5 4v-4.25A2.75 2.75 0 0 1 3 10.5v-5.75Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
-                <span>View comments</span>
+                <span x-text="commentsOpen ? 'Hide comments' : 'View comments'">View comments</span>
                 <span class="tabular-nums">({{ $review->comments->count() }})</span>
-            </a>
+            </button>
         </div>
 
-        <section id="review-comments-{{ $review->id }}" class="mt-3 border-t border-sf-border pt-3" aria-label="Comments on this review">
+        <section id="review-comments-{{ $review->id }}" x-cloak x-show="commentsOpen" class="mt-3 border-t border-sf-border pt-3" aria-label="Comments on this review">
             @if ($review->comments->isNotEmpty())
                 <div class="space-y-3">
                     @foreach ($review->comments as $reviewComment)

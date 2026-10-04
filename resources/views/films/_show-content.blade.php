@@ -26,7 +26,7 @@
                             </button>
                         </form>
 
-                        <details class="group relative">
+                        <details class="group relative z-40">
                             <summary class="inline-flex cursor-pointer list-none items-center gap-2 rounded-lg border border-sf-border bg-sf-surface px-4 py-2 text-sm font-semibold text-gray-200 transition hover:border-sf-blue/50 hover:text-white [&::-webkit-details-marker]:hidden">
                                 <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5.5A1.5 1.5 0 0 1 6.5 4H20v16H6.5A1.5 1.5 0 0 0 5 21.5m0-16v16m0-16A1.5 1.5 0 0 0 3.5 4H3v16h.5A1.5 1.5 0 0 1 5 21.5m4-12h7m-7 4h7"/>
@@ -34,7 +34,7 @@
                                 Add to list
                                 <svg class="h-4 w-4 transition group-open:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/></svg>
                             </summary>
-                            <div class="absolute left-0 top-full z-30 mt-2 w-64 rounded-xl border border-sf-border bg-sf-surface p-2 shadow-2xl">
+                            <div class="absolute right-0 top-full z-50 mt-2 w-64 max-w-[calc(100vw-2rem)] rounded-xl border border-sf-border bg-sf-surface p-2 shadow-2xl sm:left-0 sm:right-auto">
                                 @forelse (($userLists ?? collect()) as $movieList)
                                     <form method="POST" action="{{ route('lists.films.add', $movieList) }}">
                                         @csrf
