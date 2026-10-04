@@ -51,7 +51,8 @@
             @endauth
             <a href="#review-comments-{{ $review->id }}" class="inline-flex items-center gap-1.5 rounded-md border border-sf-border bg-sf-bg/70 px-2.5 py-1.5 font-medium text-sf-blue transition hover:bg-sf-blue/10" aria-label="View comments">
                 <svg class="h-3.5 w-3.5" aria-hidden="true" viewBox="0 0 20 20" fill="none"><path d="M3 4.75A2.75 2.75 0 0 1 5.75 2h8.5A2.75 2.75 0 0 1 17 4.75v5.5A2.75 2.75 0 0 1 14.25 13H9l-4.5 4v-4.25A2.75 2.75 0 0 1 3 10.5v-5.75Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
-                <span class="tabular-nums">{{ $review->comments->count() }}</span>
+                <span>View comments</span>
+                <span class="tabular-nums">({{ $review->comments->count() }})</span>
             </a>
         </div>
 

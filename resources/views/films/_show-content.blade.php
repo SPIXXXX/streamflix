@@ -123,7 +123,7 @@
             </div>
         </div>
 
-        <section class="mx-auto mt-10 max-w-3xl" aria-labelledby="reviews">
+        <section class="mt-10 w-full" aria-labelledby="reviews">
             <div class="mb-6 flex flex-wrap items-end justify-between gap-3">
                 <div>
                     <h2 id="reviews" class="text-xl font-bold text-white sm:text-2xl">Reviews <span class="text-sm font-medium text-sf-muted">({{ $film->reviews->count() }})</span></h2>
