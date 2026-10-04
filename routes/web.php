@@ -22,7 +22,7 @@ Route::get('/', function () {
     }
 
     return view('welcome');
-});
+})->name('home');
 
 Route::get('/dashboard', function () {
     if (auth()->check() && auth()->user()->hasRole('admin')) {
