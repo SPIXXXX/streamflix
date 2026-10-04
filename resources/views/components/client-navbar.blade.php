@@ -2,7 +2,7 @@
     <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-3">
         <a href="{{ route('films.index') }}" class="flex items-center space-x-3 rtl:space-x-reverse">
             <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-brand text-white">
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zm12.55 1.1A1 1 0 0014 8v4a1 1 0 00.55.9l2 1A1 1 0 0018 13V7a1 1 0 00-1.45-.9l-2 1z"/></svg>
+                <x-application-logo class="h-5 w-5" aria-hidden="true" />
             </span>
             <span class="self-center text-xl text-heading font-semibold whitespace-nowrap">CINEVAULT</span>
         </a>
