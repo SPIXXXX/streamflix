@@ -264,7 +264,7 @@ class FilmController extends Controller
     {
         $validated = $request->validate([
             'rating' => 'required|integer|min:1|max:5',
-            'comment' => 'nullable|string|max:2000',
+            'comment' => 'required|string|max:2000',
         ]);
 
         $film->reviews()->create([
@@ -281,7 +281,7 @@ class FilmController extends Controller
 
         $validated = $request->validate([
             'rating' => 'required|integer|min:1|max:5',
-            'comment' => 'nullable|string|max:2000',
+            'comment' => 'required|string|max:2000',
         ]);
 
         $review->update($validated);

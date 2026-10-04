@@ -123,41 +123,67 @@
             </div>
         </div>
 
-        <div class="mt-10">
-            <h2 id="reviews" class="text-xl font-bold text-white mb-4">Reviews</h2>
+        <section class="mx-auto mt-10 max-w-3xl" aria-labelledby="reviews">
+            <div class="mb-6 flex flex-wrap items-end justify-between gap-3">
+                <div>
+                    <h2 id="reviews" class="text-xl font-bold text-white sm:text-2xl">Reviews <span class="text-sm font-medium text-sf-muted">({{ $film->reviews->count() }})</span></h2>
+                    <p class="mt-1 text-sm text-sf-muted">Rate the film and share what you thought.</p>
+                </div>
+            </div>
 
             @auth
                 <form method="POST" action="{{ route('films.reviews.store', $film) }}"
-                      x-data="{ rating: 0, hover: 0 }"
-                      class="mb-6 bg-sf-surface border border-sf-border rounded-xl p-5">
+                      data-loading-form
+                      x-data="{ rating: @js((int) old('rating', 0)), hover: 0, comment: @js(old('comment', '')) }"
+                      class="mb-6 rounded-xl border border-sf-border bg-sf-surface p-5 shadow-sm sm:p-6">
                     @csrf
-                    <label class="block text-sm text-sf-muted mb-2">Your Rating</label>
-                    <div class="flex gap-1 mb-4">
+                    <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                        <label id="review-rating-label" class="block text-sm font-semibold text-white">Your rating <span class="text-red-400">*</span></label>
+                        <span class="text-xs text-sf-muted" x-text="rating ? `${rating} out of 5 stars` : 'Choose 1 to 5 stars'"></span>
+                    </div>
+                    <div class="mb-5 flex items-center gap-1" role="radiogroup" aria-labelledby="review-rating-label">
                         <template x-for="i in 5" :key="i">
                             <button type="button" @click="rating = i" @mouseenter="hover = i" @mouseleave="hover = 0"
-                                    class="text-2xl transition"
-                                    :class="(hover || rating) >= i ? 'text-sf-blue' : 'text-sf-border'">
-                                ★
+                                    @keydown.left.prevent="rating = Math.max(1, rating - 1)" @keydown.right.prevent="rating = Math.min(5, rating + 1)"
+                                    :aria-checked="rating === i" :aria-label="`${i} star${i === 1 ? '' : 's'}`" role="radio" :tabindex="rating === i || (!rating && i === 1) ? 0 : -1"
+                                    class="rounded-md p-1 text-3xl transition duration-150 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-sf-blue/50"
+                                    :class="(hover || rating) >= i ? 'text-amber-300' : 'text-sf-border'">
+                                <span aria-hidden="true">★</span>
                             </button>
                         </template>
                     </div>
                     <input type="hidden" name="rating" x-model="rating">
 
-                    <label class="block text-sm text-sf-muted mb-1">Comment</label>
-                    <textarea name="comment" rows="3" class="w-full rounded-lg bg-sf-bg border-sf-border text-sf-text focus:border-sf-blue focus:ring-sf-blue"></textarea>
+                    <div class="mb-4 rounded-lg border border-sf-border bg-sf-bg px-4 py-3 focus-within:border-sf-blue focus-within:ring-2 focus-within:ring-sf-blue/20">
+                        <label for="film-review-comment" class="mb-2 block text-sm font-semibold text-white">Your review <span class="text-red-400">*</span></label>
+                        <textarea id="film-review-comment" name="comment" rows="4" maxlength="2000" required x-model="comment" placeholder="What stood out to you about this film?"
+                                  class="w-full resize-y border-0 bg-transparent p-0 text-sm leading-6 text-white placeholder:text-sf-muted focus:ring-0">{{ old('comment') }}</textarea>
+                        <div class="mt-2 flex justify-between gap-3 border-t border-sf-border pt-2 text-xs text-sf-muted">
+                            <span>Your comment is required. Keep it under 2,000 characters.</span>
+                            <span class="shrink-0" x-text="`${comment.length}/2000`">0/2000</span>
+                        </div>
+                    </div>
+                    @error('rating')<p class="mb-3 text-sm text-red-400">{{ $message }}</p>@enderror
+                    @error('comment')<p class="mb-3 text-sm text-red-400">{{ $message }}</p>@enderror
 
-                    <button type="submit" :disabled="rating === 0"
-                            :class="rating === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-sf-blue-dark'"
-                            class="mt-3 bg-sf-blue text-white px-5 py-2 rounded-lg shadow-glow-blue transition">
-                        Post Review
+                    <button type="submit"
+                            :class="rating === 0 || !comment.trim() ? 'cursor-not-allowed opacity-50' : 'hover:bg-sf-blue-dark'"
+                            :disabled="rating === 0 || !comment.trim()"
+                            class="inline-flex items-center justify-center gap-2 rounded-lg bg-sf-blue px-5 py-2.5 text-sm font-semibold text-white shadow-glow-blue transition focus:outline-none focus:ring-4 focus:ring-sf-blue/30 disabled:cursor-not-allowed disabled:opacity-50">
+                        <svg class="h-4 w-4" aria-hidden="true" viewBox="0 0 20 20" fill="currentColor"><path d="M2.4 2.2a1 1 0 0 1 1.05-.15l14 6.5a1.6 1.6 0 0 1 0 2.9l-14 6.5A1 1 0 0 1 2.05 17l1.4-5.6 7.3-1.4-7.3-1.4-1.4-5.6a1 1 0 0 1 .35-.8Z"/></svg>
+                        Post review
                     </button>
                 </form>
+            @else
+                <div class="mb-6 rounded-xl border border-sf-border bg-sf-surface p-5 text-sm text-sf-muted">
+                    <a href="{{ route('login') }}" class="font-semibold text-sf-blue hover:underline">Log in</a> to rate and review this film.
+                </div>
             @endauth
 
             @forelse ($film->reviews as $review)
-                <x-review-card :review="$review" />
+                <x-review-card :review="$review" :show-date="true" />
             @empty
-                <p class="text-gray-500">No reviews yet.</p>
+                <p class="rounded-xl border border-dashed border-sf-border px-5 py-8 text-center text-sm text-sf-muted">No reviews yet. Be the first to share your thoughts.</p>
             @endforelse
-        </div>
+        </section>
     </div>

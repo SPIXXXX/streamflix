@@ -14,6 +14,8 @@ document.addEventListener('click', async (event) => {
 
     button.disabled = true;
     button.setAttribute('aria-busy', 'true');
+    button.dataset.animating = 'true';
+    window.setTimeout(() => delete button.dataset.animating, 550);
 
     try {
         const response = await fetch(button.dataset.reactionUrl, {
@@ -39,6 +41,20 @@ document.addEventListener('click', async (event) => {
         }
         if (disagreeCount) {
             disagreeCount.textContent = data.disagree;
+        }
+
+        const selected = data.status !== 'removed';
+        const activeColor = button.dataset.reaction === 'agree' ? 'text-sf-blue' : 'text-rose-300';
+        const activeBackground = button.dataset.reaction === 'agree' ? 'bg-sf-blue/10' : 'bg-rose-500/10';
+        button.dataset.active = String(selected);
+        button.classList.toggle(activeColor, selected);
+        button.classList.toggle(activeBackground, selected);
+        if (selected) {
+            const otherReaction = button.parentElement.querySelector(`button.reaction[data-review-id="${reviewId}"]:not([data-reaction="${button.dataset.reaction}"])`);
+            if (otherReaction) {
+                otherReaction.dataset.active = 'false';
+                otherReaction.classList.remove('text-sf-blue', 'text-rose-300', 'bg-sf-blue/10', 'bg-rose-500/10');
+            }
         }
     } catch (error) {
         window.dispatchEvent(new CustomEvent('app:toast', {

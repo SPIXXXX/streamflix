@@ -26,3 +26,19 @@ input[type="submit"][data-loading="true"]::after {
 @keyframes submit-button-spin {
     to { transform: rotate(360deg); }
 }
+
+.reaction[data-animating="true"] [data-reaction-icon] {
+    animation: reaction-pop 0.45s cubic-bezier(0.2, 0.8, 0.25, 1.2);
+}
+
+@keyframes reaction-pop {
+    0% { transform: scale(1) rotate(0); }
+    45% { transform: scale(1.35) rotate(-10deg); }
+    100% { transform: scale(1) rotate(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reaction[data-animating="true"] [data-reaction-icon] {
+        animation: none;
+    }
+}
