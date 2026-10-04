@@ -35,6 +35,7 @@ class ProfileController extends Controller
     {
         $validated = $request->validated();
         $avatar = $validated['avatar'] ?? null;
+        $previousAvatarPath = $request->user()->avatar_path;
         unset($validated['avatar']);
 
         $request->user()->fill($validated);
@@ -44,11 +45,14 @@ class ProfileController extends Controller
         }
 
         if ($avatar) {
-            app(PublicMediaStorage::class)->delete($request->user()->avatar_path);
             $request->user()->avatar_path = app(PublicMediaStorage::class)->store($avatar, 'avatars');
         }
 
         $request->user()->save();
+
+        if ($avatar) {
+            app(PublicMediaStorage::class)->delete($previousAvatarPath);
+        }
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
