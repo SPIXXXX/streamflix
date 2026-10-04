@@ -48,7 +48,7 @@ class MemberController extends Controller
                 'user',
                 'film',
                 'comments.user',
-                'reactions' => fn (Builder $reactions) => $reactions->where('user_id', auth()->id()),
+                'reactions' => fn ($reactions) => $reactions->where('user_id', auth()->id()),
             ])
             ->withCount([
                 'reactions as agree_count' => fn (Builder $reactions) => $reactions->where('reaction', 'agree'),
