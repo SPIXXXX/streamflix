@@ -1,17 +1,21 @@
-const clientNavbar = document.getElementById('client-navbar');
 const categoryControl = document.querySelector('[data-film-category-control]');
+const navbars = ['client-navbar', 'admin-navbar']
+    .map((id) => document.getElementById(id))
+    .filter(Boolean);
 
-if (clientNavbar && categoryControl) {
+if (categoryControl && navbars.length > 0) {
     const mobileViewport = window.matchMedia('(max-width: 767px)');
 
     const syncCategoryControl = () => {
-        const menuIsOpen = !clientNavbar.classList.contains('hidden');
+        const menuIsOpen = navbars.some((navbar) => !navbar.classList.contains('hidden'));
         categoryControl.classList.toggle('hidden', mobileViewport.matches && menuIsOpen);
     };
 
-    new MutationObserver(syncCategoryControl).observe(clientNavbar, {
-        attributes: true,
-        attributeFilter: ['class'],
+    navbars.forEach((navbar) => {
+        new MutationObserver(syncCategoryControl).observe(navbar, {
+            attributes: true,
+            attributeFilter: ['class'],
+        });
     });
 
     mobileViewport.addEventListener('change', syncCategoryControl);

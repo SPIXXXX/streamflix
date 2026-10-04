@@ -33,15 +33,15 @@
     </a>
 
     @if ($adminMode)
-        <div class="flex items-center gap-2 border-t border-sf-border px-1 pt-3">
-            <a href="{{ route('admin.films.edit', $film) }}" class="inline-flex h-10 min-w-0 flex-1 items-center justify-center gap-2 rounded-lg border border-sf-border bg-sf-surface px-3 text-sm font-semibold text-gray-200 transition hover:border-sf-blue/50 hover:bg-sf-blue/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-sf-blue/50">
+        <div class="grid grid-cols-1 gap-2 border-t border-sf-border px-1 pt-3 sm:grid-cols-2">
+            <a href="{{ route('admin.films.edit', $film) }}" class="inline-flex h-10 min-w-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-sf-blue/25 bg-sf-blue/10 px-3 text-sm font-semibold text-blue-200 transition hover:border-sf-blue/50 hover:bg-sf-blue/20 hover:text-white focus:outline-none focus:ring-2 focus:ring-sf-blue/50">
                 <svg class="h-4 w-4 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14 5 5 5M4 20l4.5-1 11-11a2.12 2.12 0 0 0-3-3l-11 11L4 20Z"/></svg>
                 <span>Edit</span>
             </a>
-            <form action="{{ route('admin.films.destroy', $film) }}" method="POST" class="min-w-0 flex-1" data-confirm data-confirm-title="Delete this film?" data-confirm-message="{{ $film->title }} will be permanently removed. This also deletes its associated reviews, ratings, and list entries." data-confirm-label="Delete film">
+            <form action="{{ route('admin.films.destroy', $film) }}" method="POST" class="w-full min-w-0" data-confirm data-confirm-title="Delete this film?" data-confirm-message="{{ $film->title }} will be permanently removed. This also deletes its associated reviews, ratings, and list entries." data-confirm-label="Delete film">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-red-500/25 bg-red-500/10 px-3 text-sm font-semibold text-red-300 transition hover:border-red-500/50 hover:bg-red-500/20 hover:text-red-200 focus:outline-none focus:ring-2 focus:ring-red-500/50">
+                <button type="submit" class="inline-flex h-10 w-full items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-red-500/25 bg-red-500/10 px-3 text-sm font-semibold text-red-300 transition hover:border-red-500/50 hover:bg-red-500/20 hover:text-red-200 focus:outline-none focus:ring-2 focus:ring-red-500/50">
                     <svg class="h-4 w-4 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 4v6m4-6v6M9 7V4h6v3m-9 0 1 13h10l1-13"/></svg>
                     <span>Delete</span>
                 </button>

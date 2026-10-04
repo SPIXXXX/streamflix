@@ -33,9 +33,20 @@
         <input id="cast" type="text" name="cast" value="{{ old('cast', $film->cast ?? '') }}" class="w-full rounded-xl border border-white/5 bg-[#160c1f] px-3 py-2.5 text-white placeholder:text-sf-muted focus:border-[#c81f3b] focus:outline-none focus:ring-2 focus:ring-[#c81f3b]/20">
     </div>
 
-    <div class="md:col-span-2">
-        <label class="block text-sm text-sf-muted mb-2">Poster</label>
-        <input type="file" name="poster" class="w-full rounded-xl border border-dashed border-white/5 bg-[#160c1f] px-3 py-2.5 text-white file:mr-3 file:rounded file:border-0 file:bg-[#c81f3b] file:px-3 file:py-2 file:text-white file:font-medium">
+    <div class="md:col-span-2 flex flex-col gap-5 rounded-xl border border-white/5 bg-[#100817] p-4 sm:flex-row sm:items-start">
+        @if (isset($film) && $film->poster_path)
+            <div class="shrink-0">
+                <p class="mb-2 text-sm font-medium text-sf-muted">Current poster</p>
+                <div class="h-56 w-40 overflow-hidden rounded-xl border border-white/10 bg-[#160c1f] shadow-lg shadow-black/30">
+                    <x-film-poster-image :film="$film" container-class="h-full w-full" :alt="$film->title.' current poster'" loading="eager" />
+                </div>
+            </div>
+        @endif
+        <div class="min-w-0 flex-1">
+            <label class="mb-2 block text-sm font-medium text-sf-muted">{{ isset($film) && $film->poster_path ? 'Replace poster' : 'Poster' }}</label>
+            <input type="file" name="poster" accept="image/jpeg,image/png,image/webp" class="w-full rounded-xl border border-dashed border-white/10 bg-[#160c1f] px-3 py-2.5 text-white file:mr-3 file:rounded-lg file:border-0 file:bg-[#c81f3b] file:px-3 file:py-2 file:font-medium file:text-white">
+            <p class="mt-2 text-xs text-sf-muted">Choose an image file to update the movie poster.</p>
+        </div>
     </div>
 
     <div id="posterPreviewWrap" class="hidden md:col-span-2">
