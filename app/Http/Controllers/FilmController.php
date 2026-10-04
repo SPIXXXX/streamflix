@@ -162,8 +162,11 @@ class FilmController extends Controller
 
         $film->load([
             'reviews' => fn ($query) => $query
-                ->with('user')
-                ->with('comments.user')
+                ->with([
+                    'user',
+                    'comments.user',
+                    'reactions' => fn (Builder $reactions) => $reactions->where('user_id', Auth::id()),
+                ])
                 ->withCount([
                     'reactions as agree_count' => fn (Builder $reactions) => $reactions->where('reaction', 'agree'),
                     'reactions as disagree_count' => fn (Builder $reactions) => $reactions->where('reaction', 'disagree'),

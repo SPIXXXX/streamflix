@@ -12,6 +12,46 @@ document.addEventListener('click', async (event) => {
         return;
     }
 
+    const reviewId = button.dataset.reviewId;
+    const reviewCard = document.getElementById(`review-${reviewId}`);
+    const agreeCount = reviewCard?.querySelector(`.reaction-agree-${reviewId}`);
+    const disagreeCount = reviewCard?.querySelector(`.reaction-disagree-${reviewId}`);
+    const otherButton = reviewCard?.querySelector(`button.reaction[data-reaction]:not([data-reaction="${button.dataset.reaction}"])`);
+    const previous = {
+        agree: Number(agreeCount?.textContent ?? 0),
+        disagree: Number(disagreeCount?.textContent ?? 0),
+        active: button.dataset.active === 'true',
+        otherActive: otherButton?.dataset.active === 'true',
+    };
+    const selected = !previous.active;
+    const activeColor = (reaction) => reaction === 'agree' ? 'text-emerald-400' : 'text-rose-400';
+    const activeBackground = (reaction) => reaction === 'agree' ? 'bg-emerald-500/10' : 'bg-rose-500/10';
+    const setActive = (target, active) => {
+        if (!target) {
+            return;
+        }
+
+        target.dataset.active = String(active);
+        target.classList.toggle(activeColor(target.dataset.reaction), active);
+        target.classList.toggle(activeBackground(target.dataset.reaction), active);
+    };
+    const updateCount = (target, value) => {
+        if (target) {
+            target.textContent = String(Math.max(0, value));
+        }
+    };
+
+    if (selected) {
+        updateCount(button.dataset.reaction === 'agree' ? agreeCount : disagreeCount, (button.dataset.reaction === 'agree' ? previous.agree : previous.disagree) + 1);
+        if (previous.otherActive) {
+            updateCount(button.dataset.reaction === 'agree' ? disagreeCount : agreeCount, (button.dataset.reaction === 'agree' ? previous.disagree : previous.agree) - 1);
+        }
+    } else {
+        updateCount(button.dataset.reaction === 'agree' ? agreeCount : disagreeCount, (button.dataset.reaction === 'agree' ? previous.agree : previous.disagree) - 1);
+    }
+    setActive(button, selected);
+    setActive(otherButton, selected ? false : previous.otherActive);
+
     button.disabled = true;
     button.setAttribute('aria-busy', 'true');
     button.dataset.animating = 'true';
@@ -33,30 +73,17 @@ document.addEventListener('click', async (event) => {
             throw new Error(data.message || 'Could not save your reaction. Please try again.');
         }
 
-        const reviewId = button.dataset.reviewId;
-        const agreeCount = document.querySelector(`.reaction-agree-${reviewId}`);
-        const disagreeCount = document.querySelector(`.reaction-disagree-${reviewId}`);
-        if (agreeCount) {
-            agreeCount.textContent = data.agree;
-        }
-        if (disagreeCount) {
-            disagreeCount.textContent = data.disagree;
-        }
-
-        const selected = data.status !== 'removed';
-        const activeColor = button.dataset.reaction === 'agree' ? 'text-emerald-400' : 'text-rose-400';
-        const activeBackground = button.dataset.reaction === 'agree' ? 'bg-emerald-500/10' : 'bg-rose-500/10';
-        button.dataset.active = String(selected);
-        button.classList.toggle(activeColor, selected);
-        button.classList.toggle(activeBackground, selected);
-        if (selected) {
-            const otherReaction = button.parentElement.querySelector(`button.reaction[data-review-id="${reviewId}"]:not([data-reaction="${button.dataset.reaction}"])`);
-            if (otherReaction) {
-                otherReaction.dataset.active = 'false';
-                otherReaction.classList.remove('text-emerald-400', 'text-rose-400', 'bg-emerald-500/10', 'bg-rose-500/10');
-            }
+        updateCount(agreeCount, data.agree);
+        updateCount(disagreeCount, data.disagree);
+        setActive(button, data.status !== 'removed');
+        if (data.status !== 'removed') {
+            setActive(otherButton, false);
         }
     } catch (error) {
+        updateCount(agreeCount, previous.agree);
+        updateCount(disagreeCount, previous.disagree);
+        setActive(button, previous.active);
+        setActive(otherButton, previous.otherActive);
         window.dispatchEvent(new CustomEvent('app:toast', {
             detail: { type: 'error', message: error.message || 'Could not save your reaction. Please try again.' },
         }));

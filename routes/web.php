@@ -42,6 +42,8 @@ Route::middleware('auth')->group(function () {
     // Review reactions (agree / disagree)
     Route::post('/reviews/{review}/reactions', [ReviewReactionController::class, 'store'])->name('reviews.reactions.store');
     Route::post('/reviews/{review}/comments', [ReviewCommentController::class, 'store'])->name('reviews.comments.store');
+    Route::patch('/review-comments/{reviewComment}', [ReviewCommentController::class, 'update'])->name('reviews.comments.update');
+    Route::delete('/review-comments/{reviewComment}', [ReviewCommentController::class, 'destroy'])->name('reviews.comments.destroy');
     Route::post('/films/{film}/favorite', [FilmController::class, 'toggleFavorite'])->name('films.favorite');
 });
 

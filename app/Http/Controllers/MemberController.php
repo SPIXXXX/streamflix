@@ -44,7 +44,11 @@ class MemberController extends Controller
         $user = User::publicMembers()->withMemberStats()->whereKey($user->getKey())->firstOrFail();
         $reviews = Review::query()
             ->where('user_id', $user->id)
-            ->with(['film', 'comments.user'])
+            ->with([
+                'film',
+                'comments.user',
+                'reactions' => fn (Builder $reactions) => $reactions->where('user_id', auth()->id()),
+            ])
             ->withCount([
                 'reactions as agree_count' => fn (Builder $reactions) => $reactions->where('reaction', 'agree'),
                 'reactions as disagree_count' => fn (Builder $reactions) => $reactions->where('reaction', 'disagree'),
