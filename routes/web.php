@@ -46,7 +46,9 @@ Route::middleware('auth')->group(function () {
 // Client-facing films
 Route::get('/films', [FilmController::class, 'index'])->name('films.index');
 Route::get('/films/collections/{category}', [FilmController::class, 'collection'])->name('films.collections');
-Route::get('/films/cast/{personId}', [FilmController::class, 'castMember'])->whereNumber('personId')->name('films.cast-member');
+Route::get('/films/{film}/cast/{personId}', [FilmController::class, 'castMember'])
+    ->whereNumber(['film', 'personId'])
+    ->name('films.cast-member');
 Route::get('/films/{film}', [FilmController::class, 'show'])->name('films.show');
 Route::middleware('auth')->post('/films/{film}/reviews', [FilmController::class, 'storeReview'])->name('films.reviews.store');
 

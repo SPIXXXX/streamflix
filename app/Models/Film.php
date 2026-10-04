@@ -48,7 +48,7 @@ class Film extends Model
     public function castMembers(): BelongsToMany
     {
         return $this->belongsToMany(CastMember::class, 'film_cast')
-            ->withPivot(['character', 'cast_order'])
+            ->withPivot(['character', 'cast_order', 'tmdb_profile_path', 'profile_path'])
             ->orderByPivot('cast_order')
             ->withTimestamps();
     }

@@ -2,19 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SyncFilmCast;
 use App\Models\CastMember;
 use App\Models\Film;
-use App\Services\CastMemberSyncService;
-use App\Services\TmdbService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
 
 class AdminFilmDetailController extends Controller
 {
-    public function show(Film $film, TmdbService $tmdb, CastMemberSyncService $castSync): View
+    public function show(Film $film): View
     {
         if ($film->tmdb_id && ! $film->castMembers()->exists()) {
-            $castSync->sync($film, $tmdb->castMembers((int) $film->tmdb_id));
+            SyncFilmCast::dispatch($film->id)->afterResponse();
         }
 
         $film->load([
@@ -31,7 +30,7 @@ class AdminFilmDetailController extends Controller
             'id' => $member->tmdb_id,
             'name' => $member->name,
             'character' => $member->pivot->character,
-            'profile_url' => $member->profileUrl(),
+            'profile_url' => $member->pivot->profile_path ?: $member->profileUrl(),
         ])->all();
         $userLists = auth()->user()->movieLists()
             ->where('is_official', false)

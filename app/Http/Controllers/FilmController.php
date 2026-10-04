@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SyncFilmCast;
 use App\Models\CastMember;
 use App\Models\Film;
 use App\Models\Review;
-use App\Services\CastMemberSyncService;
 use App\Services\TmdbService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
@@ -145,10 +145,10 @@ class FilmController extends Controller
         return view('films.collection', compact('category', 'films', 'title'));
     }
 
-    public function show(Film $film, TmdbService $tmdb, CastMemberSyncService $castSync): View
+    public function show(Film $film): View
     {
         if ($film->tmdb_id && ! $film->castMembers()->exists()) {
-            $castSync->sync($film, $tmdb->castMembers((int) $film->tmdb_id));
+            SyncFilmCast::dispatch($film->id)->afterResponse();
         }
 
         $film->load([
@@ -165,7 +165,7 @@ class FilmController extends Controller
             'id' => $member->tmdb_id,
             'name' => $member->name,
             'character' => $member->pivot->character,
-            'profile_url' => $member->profileUrl(),
+            'profile_url' => $member->pivot->profile_path ?: $member->profileUrl(),
         ])->all();
         $userLists = auth()->user()?->movieLists()
             ->where('is_official', false)
@@ -198,11 +198,13 @@ class FilmController extends Controller
         return back()->with('status', $message);
     }
 
-    public function castMember(int $personId, TmdbService $tmdb): JsonResponse
+    public function castMember(Film $film, int $personId, TmdbService $tmdb): JsonResponse
     {
+        $filmCastMember = $film->castMembers()->where('tmdb_id', $personId)->first();
         $castMember = CastMember::where('tmdb_id', $personId)->first();
+        $filmProfileUrl = $filmCastMember?->pivot->profile_path;
         if ($castMember?->biography_fetched_at) {
-            return response()->json($this->castMemberPayload($castMember));
+            return response()->json($this->castMemberPayload($castMember, $filmProfileUrl));
         }
 
         $person = $tmdb->personDetails($personId);
@@ -212,7 +214,7 @@ class FilmController extends Controller
                 return response()->json(['message' => 'Cast details are not available.'], 404);
             }
 
-            return response()->json($this->castMemberPayload($castMember));
+            return response()->json($this->castMemberPayload($castMember, $filmProfileUrl));
         }
 
         $castMember = CastMember::updateOrCreate(
@@ -228,10 +230,10 @@ class FilmController extends Controller
             ],
         );
 
-        return response()->json($this->castMemberPayload($castMember));
+        return response()->json($this->castMemberPayload($castMember, $filmProfileUrl));
     }
 
-    private function castMemberPayload(CastMember $castMember): array
+    private function castMemberPayload(CastMember $castMember, ?string $profileUrl = null): array
     {
         return [
             'id' => $castMember->tmdb_id,
@@ -241,7 +243,7 @@ class FilmController extends Controller
             'deathday' => $castMember->deathday?->toDateString(),
             'place_of_birth' => $castMember->place_of_birth,
             'known_for_department' => $castMember->known_for_department,
-            'profile_url' => $castMember->profileUrl(),
+            'profile_url' => $profileUrl ?: $castMember->profileUrl(),
         ];
     }
 

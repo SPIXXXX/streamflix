@@ -75,7 +75,7 @@
                                 data-cast-name="{{ $castMember['name'] }}"
                                 data-cast-character="{{ $castMember['character'] ?? '' }}"
                                 data-cast-photo="{{ $castMember['profile_url'] ?? '' }}"
-                                data-cast-url="{{ route('films.cast-member', ['personId' => $castMember['id']]) }}"
+                                data-cast-url="{{ route('films.cast-member', ['film' => $film, 'personId' => $castMember['id']]) }}"
                                 data-modal-target="cast-member-modal"
                                 data-modal-toggle="cast-member-modal"
                                 aria-label="View {{ $castMember['name'] }}{{ !empty($castMember['character']) ? ', playing '.$castMember['character'] : '' }}"

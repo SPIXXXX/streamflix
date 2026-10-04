@@ -59,7 +59,7 @@ class PublicMediaStorage
 
     public function delete(?string $path): void
     {
-        if (! $path) {
+        if (! $path || str_starts_with($path, '/')) {
             return;
         }
 

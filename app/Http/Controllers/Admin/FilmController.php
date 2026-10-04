@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SyncFilmCast;
 use App\Models\Film;
-use App\Services\CastMemberSyncService;
 use App\Services\PublicMediaStorage;
 use App\Services\TmdbService;
 use Illuminate\Http\Request;
@@ -44,16 +44,17 @@ class FilmController extends Controller
             'tmdb_poster_path' => ['nullable', 'string', 'max:255', 'regex:/^\/[A-Za-z0-9._-]+$/'],
         ]);
 
+        $tmdbPosterPath = $validated['tmdb_poster_path'] ?? null;
         if ($request->hasFile('poster')) {
             $validated['poster_path'] = app(PublicMediaStorage::class)->store($request->file('poster'), 'posters');
-        } elseif (! empty($validated['tmdb_poster_path'])) {
-            $validated['poster_path'] = $this->storeTmdbPoster($validated['tmdb_poster_path']);
+        } elseif ($tmdbPosterPath) {
+            $validated['poster_path'] = $tmdbPosterPath;
         }
         unset($validated['tmdb_poster_path']);
 
         $film = Film::create($validated);
-        if ($film->tmdb_id) {
-            app(CastMemberSyncService::class)->sync($film, $this->tmdb->castMembers((int) $film->tmdb_id));
+        if ($film->tmdb_id || $tmdbPosterPath) {
+            SyncFilmCast::dispatch($film->id, null, $tmdbPosterPath)->afterResponse();
         }
 
         return redirect()->route('admin.films.index')->with('status', 'Film added!');
@@ -66,6 +67,7 @@ class FilmController extends Controller
 
     public function update(Request $request, Film $film)
     {
+        $previousPosterPath = $film->poster_path;
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'original_title' => 'nullable|string|max:255',
@@ -79,16 +81,26 @@ class FilmController extends Controller
             'tmdb_poster_path' => ['nullable', 'string', 'max:255', 'regex:/^\/[A-Za-z0-9._-]+$/'],
         ]);
 
+        $tmdbPosterPath = $validated['tmdb_poster_path'] ?? null;
         if ($request->hasFile('poster')) {
             $validated['poster_path'] = app(PublicMediaStorage::class)->store($request->file('poster'), 'posters');
-        } elseif (! empty($validated['tmdb_poster_path'])) {
-            $validated['poster_path'] = $this->storeTmdbPoster($validated['tmdb_poster_path']);
+        } elseif ($tmdbPosterPath) {
+            $validated['poster_path'] = $tmdbPosterPath;
         }
         unset($validated['tmdb_poster_path']);
 
         $film->update($validated);
-        if ($film->tmdb_id) {
-            app(CastMemberSyncService::class)->sync($film, $this->tmdb->castMembers((int) $film->tmdb_id));
+        if (! $tmdbPosterPath && $previousPosterPath !== $film->poster_path) {
+            app(PublicMediaStorage::class)->delete($previousPosterPath);
+        }
+
+        if ($film->tmdb_id || $tmdbPosterPath) {
+            SyncFilmCast::dispatch(
+                $film->id,
+                null,
+                $tmdbPosterPath,
+                $tmdbPosterPath ? $previousPosterPath : null,
+            )->afterResponse();
         }
 
         return redirect()->route('admin.films.index')->with('status', 'Film updated!');
@@ -96,7 +108,17 @@ class FilmController extends Controller
 
     public function destroy(Film $film)
     {
+        $castMembers = $film->castMembers()->get();
+        app(PublicMediaStorage::class)->delete($film->poster_path);
         $film->delete();
+
+        foreach ($castMembers as $castMember) {
+            app(PublicMediaStorage::class)->delete($castMember->pivot->profile_path);
+            if (! $castMember->films()->exists()) {
+                app(PublicMediaStorage::class)->delete($castMember->profile_path);
+                $castMember->delete();
+            }
+        }
 
         return back()->with('status', 'Film deleted.');
     }
@@ -157,6 +179,7 @@ class FilmController extends Controller
         }
 
         $details = $this->tmdb->details($tmdbId);
+        $posterPath = $details['poster_path'] ?? null;
 
         $film = Film::create([
             'tmdb_id' => $details['id'],
@@ -167,38 +190,11 @@ class FilmController extends Controller
             'release_year' => $details['release_date'] ? substr($details['release_date'], 0, 4) : null,
             'release_date' => $details['release_date'] ?: null,
             'cast' => collect($details['credits']['cast'] ?? [])->take(6)->pluck('name')->join(', '),
-            'poster_path' => $this->storeTmdbPoster($details['poster_path'] ?? null),
+            'poster_path' => $posterPath,
         ]);
-        app(CastMemberSyncService::class)->sync($film, $details['credits']['cast'] ?? []);
+        SyncFilmCast::dispatch($film->id, $details['credits']['cast'] ?? [], $posterPath)->afterResponse();
         $film->syncTmdbKeywords(data_get($details, 'keywords.keywords', []));
 
         return redirect()->route('admin.films.index')->with('status', "Imported \"{$film->title}\"!");
-    }
-
-    private function storeTmdbPoster(?string $posterPath): ?string
-    {
-        $image = $this->tmdb->downloadPoster($posterPath);
-        if (! $image) {
-            return $posterPath;
-        }
-
-        $extension = match ($image['content_type']) {
-            'image/jpeg', 'image/jpg' => 'jpg',
-            'image/png' => 'png',
-            'image/webp' => 'webp',
-            'image/avif' => 'avif',
-            'image/gif' => 'gif',
-            default => null,
-        };
-        if (! $extension) {
-            return $posterPath;
-        }
-
-        return app(PublicMediaStorage::class)->storeContents(
-            $image['contents'],
-            'posters',
-            $extension,
-            $image['content_type'],
-        );
     }
 }
