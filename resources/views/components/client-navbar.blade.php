@@ -10,7 +10,14 @@
         <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
             <button type="button" class="flex text-sm bg-neutral-primary rounded-full md:me-0 focus:ring-4 focus:ring-neutral-tertiary" id="client-user-menu-button" aria-expanded="false" data-dropdown-toggle="client-user-dropdown" data-dropdown-placement="bottom-end">
                 <span class="sr-only">Open user menu</span>
-                <x-user-avatar :user="auth()->user()" />
+                @auth
+                    <span class="relative inline-flex">
+                        <x-user-avatar :user="auth()->user()" />
+                        <span role="img" aria-label="Online" title="Online" class="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-sf-bg bg-emerald-400"></span>
+                    </span>
+                @else
+                    <x-user-avatar :user="null" />
+                @endauth
             </button>
             <div class="z-50 hidden bg-neutral-primary-medium border border-default-medium rounded-base shadow-lg w-52" id="client-user-dropdown">
                 @auth
