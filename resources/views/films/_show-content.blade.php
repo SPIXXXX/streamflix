@@ -9,7 +9,7 @@
                 <p class="text-gray-400 mt-1">{{ $film->genre }} • {{ $film->release_date?->format('M j, Y') ?: $film->release_year }}</p>
                 <p class="text-gray-300 mt-4">{{ $film->synopsis }}</p>
 
-                <p class="text-blue-400 mt-4 font-semibold">
+                <p class="text-sf-muted mt-4 font-semibold">
                     ⭐ {{ number_format((float) ($film->reviews_avg_rating ?? 0), 1) }} ({{ $film->reviews->count() }} reviews)
                 </p>
 
@@ -42,14 +42,14 @@
                                         <button type="submit" class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm text-gray-200 transition hover:bg-sf-surface-light hover:text-white">
                                             <span class="truncate">{{ $movieList->title }}</span>
                                             @if ($movieList->contains_film)
-                                                <span class="ml-2 shrink-0 text-xs text-sf-blue">Added</span>
+                                                <span class="ml-2 shrink-0 text-xs text-sf-text">Added</span>
                                             @endif
                                         </button>
                                     </form>
                                 @empty
                                     <p class="px-3 py-2 text-sm text-sf-muted">You haven’t created a list yet.</p>
                                 @endforelse
-                                <a href="{{ route('lists.create') }}" class="mt-1 block rounded-lg border-t border-sf-border px-3 py-2 text-sm font-medium text-sf-blue hover:bg-sf-surface-light">Create a movie list</a>
+                                <a href="{{ route('lists.create') }}" class="mt-1 block rounded-lg border-t border-sf-border px-3 py-2 text-sm font-medium text-sf-text hover:bg-sf-surface-light">Create a movie list</a>
                             </div>
                         </details>
                     </div>
@@ -85,7 +85,7 @@
                             @else
                                 <span aria-hidden="true" class="flex h-20 w-20 items-center justify-center rounded-full border-2 border-sf-border bg-sf-surface-light text-xl font-semibold text-sf-muted transition group-hover:border-sf-blue group-hover:text-white">{{ strtoupper(substr($castMember['name'], 0, 1)) }}</span>
                             @endif
-                            <span class="mt-2 line-clamp-2 text-sm font-medium text-white group-hover:text-sf-blue">{{ $castMember['name'] }}</span>
+                            <span class="mt-2 line-clamp-2 text-sm font-medium text-white group-hover:text-sf-text">{{ $castMember['name'] }}</span>
                             @if ($castMember['character'])
                                 <span class="mt-0.5 line-clamp-1 text-xs text-sf-muted">{{ $castMember['character'] }}</span>
                             @endif
@@ -108,11 +108,11 @@
                     <div class="grid gap-5 p-5 sm:grid-cols-[10rem_1fr] sm:p-7">
                         <div class="mx-auto sm:mx-0">
                             <img id="cast-member-photo" alt="" class="hidden h-40 w-40 rounded-xl object-cover shadow-lg sm:h-36 sm:w-36">
-                            <div id="cast-member-photo-placeholder" class="flex h-40 w-40 items-center justify-center rounded-xl bg-sf-surface-light text-4xl font-bold text-sf-blue sm:h-36 sm:w-36">?</div>
+                            <div id="cast-member-photo-placeholder" class="flex h-40 w-40 items-center justify-center rounded-xl bg-sf-surface-light text-4xl font-bold text-sf-text sm:h-36 sm:w-36">?</div>
                         </div>
                         <div class="min-w-0">
                             <h3 id="cast-member-name" class="pr-8 text-2xl font-bold text-white">Cast member</h3>
-                            <p id="cast-member-character" class="mt-1 text-sm text-sf-blue"></p>
+                            <p id="cast-member-character" class="mt-1 text-sm text-sf-text"></p>
                             <p id="cast-member-department" class="mt-2 text-xs font-semibold uppercase tracking-wide text-sf-muted"></p>
                             <ul id="cast-member-facts" class="mt-3 space-y-1 text-sm text-gray-300"></ul>
                             <p id="cast-member-biography" class="mt-4 max-h-56 overflow-y-auto whitespace-pre-line text-sm leading-6 text-gray-300 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">Loading cast details…</p>
@@ -176,7 +176,7 @@
                 </form>
             @else
                 <div class="mb-6 rounded-xl border border-sf-border bg-sf-surface p-5 text-sm text-sf-muted">
-                    <a href="{{ route('login') }}" class="font-semibold text-sf-blue hover:underline">Log in</a> to rate and review this film.
+                    <a href="{{ route('login') }}" class="font-semibold text-sf-text hover:underline">Log in</a> to rate and review this film.
                 </div>
             @endauth
 

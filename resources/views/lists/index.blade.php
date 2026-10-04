@@ -38,7 +38,7 @@
                     @endforeach
                 </div>
                 @if ($favoriteCount === 0 && $myLists->isEmpty())
-                    <p class="mt-3 text-sm text-sf-muted">No movie lists yet. <a href="{{ route('films.index') }}" class="text-sf-blue hover:underline">Browse films</a> or create a list to get started.</p>
+                    <p class="mt-3 text-sm text-sf-muted">No movie lists yet. <a href="{{ route('films.index') }}" class="text-sf-text hover:underline">Browse films</a> or create a list to get started.</p>
                 @endif
             </section>
         @endauth

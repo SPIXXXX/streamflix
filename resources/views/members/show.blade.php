@@ -61,7 +61,7 @@
                             <h2 class="text-lg font-semibold text-white">Latest reviews</h2>
                             @forelse ($user->reviews()->with('film')->latest()->limit(3)->get() as $review)
                                 <div class="border-b border-sf-border py-3 last:border-0">
-                                    <a href="{{ route('films.show', $review->film) }}" class="font-medium text-white hover:text-sf-blue">{{ $review->film->title }}</a>
+                                    <a href="{{ route('films.show', $review->film) }}" class="font-medium text-white hover:text-sf-text">{{ $review->film->title }}</a>
                                     <span class="ml-2 text-sm text-amber-300">★ {{ $review->rating }}</span>
                                     @if ($review->comment)
                                         <p class="mt-1 line-clamp-2 text-sm text-sf-muted">{{ $review->comment }}</p>
@@ -71,7 +71,7 @@
                                 <p class="mt-3 text-sm text-sf-muted">No reviews yet.</p>
                             @endforelse
                             @if ($user->reviews_count)
-                                <a href="{{ route('members.show', ['user' => $user, 'tab' => 'reviews']) }}#member-tabs" class="mt-3 inline-block text-sm font-semibold text-sf-blue hover:text-white">Browse all reviews →</a>
+                                <a href="{{ route('members.show', ['user' => $user, 'tab' => 'reviews']) }}#member-tabs" class="mt-3 inline-block text-sm font-semibold text-sf-text hover:text-white">Browse all reviews →</a>
                             @endif
                         </article>
                     </div>
@@ -83,7 +83,7 @@
                                 <p class="mt-1 text-sm text-sf-muted">Lists this member has chosen to share.</p>
                             </div>
                             @if ($user->public_lists_count)
-                                <a href="{{ route('members.show', ['user' => $user, 'tab' => 'lists']) }}#member-tabs" class="shrink-0 text-sm font-semibold text-sf-blue hover:text-white">View all →</a>
+                                <a href="{{ route('members.show', ['user' => $user, 'tab' => 'lists']) }}#member-tabs" class="shrink-0 text-sm font-semibold text-sf-text hover:text-white">View all →</a>
                             @endif
                         </div>
                         @php($overviewLists = $user->movieLists()->where('is_public', true)->withCount('films')->with('films')->latest()->limit(3)->get())

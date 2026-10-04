@@ -39,7 +39,7 @@
 
         <p class="text-center text-sm text-sf-muted">
             Already registered?
-            <a href="{{ route('login') }}" class="text-sf-blue hover:underline">Log in</a>
+            <a href="{{ route('login') }}" class="text-sf-text hover:underline">Log in</a>
         </p>
     </form>
 </x-guest-layout>

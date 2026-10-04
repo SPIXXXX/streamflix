@@ -16,11 +16,11 @@
 
         <div class="flex items-center justify-between">
             <label class="flex items-center gap-2 text-sm text-sf-muted">
-                <input type="checkbox" name="remember" class="rounded bg-sf-bg border-sf-border text-sf-blue focus:ring-sf-blue">
+                <input type="checkbox" name="remember" class="rounded bg-sf-bg border-sf-border text-sf-text focus:ring-sf-blue">
                 Remember me
             </label>
             @if (Route::has('password.request'))
-                <a class="text-sm text-sf-blue hover:underline" href="{{ route('password.request') }}">Forgot password?</a>
+                <a class="text-sm text-sf-text hover:underline" href="{{ route('password.request') }}">Forgot password?</a>
             @endif
         </div>
 
@@ -46,7 +46,7 @@
 
         <p class="text-center text-sm text-sf-muted">
             Don't have an account?
-            <a href="{{ route('register') }}" class="text-sf-blue hover:underline">Sign up</a>
+            <a href="{{ route('register') }}" class="text-sf-text hover:underline">Sign up</a>
         </p>
     </form>
 </x-guest-layout>

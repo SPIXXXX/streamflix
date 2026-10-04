@@ -65,11 +65,11 @@
                     <article class="rounded-2xl border border-sf-border bg-sf-surface p-5 sm:p-6">
                         <div class="flex items-center justify-between gap-3">
                             <div><h2 class="text-lg font-semibold text-white">Recent activity</h2><p class="mt-1 text-xs text-sf-muted">From recorded reviews, favorites, reactions, and public lists.</p></div>
-                            <a href="{{ route('admin.accounts.show', ['user' => $user, 'tab' => 'activity']) }}#account-tabs" class="shrink-0 text-sm font-semibold text-sf-blue hover:text-white">View all</a>
+                            <a href="{{ route('admin.accounts.show', ['user' => $user, 'tab' => 'activity']) }}#account-tabs" class="shrink-0 text-sm font-semibold text-sf-text hover:text-white">View all</a>
                         </div>
                         @forelse ($activities->getCollection()->take(5) as $activity)
                             <div class="flex gap-3 border-b border-sf-border py-3 last:border-0">
-                                <span class="mt-1 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-sf-blue/10 text-xs text-sf-blue" aria-hidden="true">
+                                <span class="mt-1 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-sf-blue/10 text-xs text-sf-text" aria-hidden="true">
                                     {{ ['review' => '★', 'list' => '▤', 'favorite' => '♥', 'reaction' => '↗', 'list_add' => '+'][$activity->type] ?? '•' }}
                                 </span>
                                 <p class="min-w-0 flex-1 text-sm leading-5 text-sf-text">@include('admin.accounts.partials.activity-description', ['activity' => $activity])<span class="mt-1 block text-xs text-sf-muted">{{ \Illuminate\Support\Carbon::parse($activity->occurred_at)->diffForHumans() }}</span></p>
@@ -88,7 +88,7 @@
                     <ol class="relative ml-3 border-s border-sf-border">
                         @foreach ($activities as $activity)
                             <li class="mb-6 ms-6 last:mb-0">
-                                <span class="absolute -start-3 flex h-6 w-6 items-center justify-center rounded-full border border-sf-border bg-sf-surface text-xs text-sf-blue" aria-hidden="true">{{ ['review' => '★', 'list' => '▤', 'favorite' => '♥', 'reaction' => '↗', 'list_add' => '+'][$activity->type] ?? '•' }}</span>
+                                <span class="absolute -start-3 flex h-6 w-6 items-center justify-center rounded-full border border-sf-border bg-sf-surface text-xs text-sf-text" aria-hidden="true">{{ ['review' => '★', 'list' => '▤', 'favorite' => '♥', 'reaction' => '↗', 'list_add' => '+'][$activity->type] ?? '•' }}</span>
                                 <article class="rounded-2xl border border-sf-border bg-sf-surface p-4 sm:p-5">
                                     <p class="text-sm leading-6 text-white">@include('admin.accounts.partials.activity-description', ['activity' => $activity])</p>
                                     <time class="mt-2 block text-xs text-sf-muted" datetime="{{ \Illuminate\Support\Carbon::parse($activity->occurred_at)->toIso8601String() }}">{{ \Illuminate\Support\Carbon::parse($activity->occurred_at)->format('M j, Y · g:i A') }}</time>
@@ -116,7 +116,7 @@
                                     <div class="flex flex-wrap items-start justify-between gap-2">
                                         <div class="min-w-0">
                                             @if ($review->film)
-                                                <a href="{{ route('films.show', $review->film) }}" class="font-semibold text-white hover:text-sf-blue">{{ $review->film->title }}</a>
+                                                <a href="{{ route('films.show', $review->film) }}" class="font-semibold text-white hover:text-sf-text">{{ $review->film->title }}</a>
                                             @else
                                                 <span class="font-semibold text-sf-muted">Film unavailable</span>
                                             @endif

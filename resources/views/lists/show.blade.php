@@ -14,7 +14,7 @@
                                 <svg class="h-6 w-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg>
                             </span>
                         @else
-                            <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-sf-blue/10 text-sf-blue">
+                            <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-sf-blue/10 text-sf-text">
                                 <svg class="h-6 w-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5.5A1.5 1.5 0 0 1 5.5 4H20v16H5.5A1.5 1.5 0 0 0 4 21.5v-16Zm0 0A1.5 1.5 0 0 0 2.5 4H2v16h.5A1.5 1.5 0 0 1 4 21.5M8 9h8m-8 4h8"/></svg>
                             </span>
                         @endif
@@ -100,7 +100,7 @@
                 </div>
             @else
                 <div class="rounded-2xl border border-dashed border-sf-border bg-sf-surface/60 px-5 py-12 text-center">
-                    <span class="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-full bg-sf-blue/10 text-sf-blue">
+                    <span class="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-full bg-sf-blue/10 text-sf-text">
                         <svg class="h-6 w-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5.5A1.5 1.5 0 0 1 6.5 4H20v16H6.5A1.5 1.5 0 0 0 5 21.5v-16Zm0 0A1.5 1.5 0 0 0 3.5 4H3v16h.5A1.5 1.5 0 0 1 5 21.5"/></svg>
                     </span>
                     <h2 class="mt-4 text-lg font-semibold text-white">{{ $isFavoritesCollection ? 'No favorite movies yet.' : "This list doesn't have any movies yet." }}</h2>

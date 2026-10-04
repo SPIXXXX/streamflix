@@ -3,7 +3,7 @@
         <a href="{{ route('films.index') }}" class="mb-6 inline-flex items-center gap-2 text-sm font-medium text-sf-muted transition hover:text-white">← All Films</a>
         <header class="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
-                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-sf-blue">Film collection</p>
+                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-sf-text">Film collection</p>
                 <h1 class="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">{{ $title }}</h1>
             </div>
             @if (isset($films))

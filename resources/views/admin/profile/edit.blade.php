@@ -9,17 +9,17 @@
     </div>
 
     <div class="space-y-6">
-        <section class="rounded-xl border border-neutral-800 bg-[#111014] p-5 sm:p-7">
+        <section class="rounded-xl border border-neutral-800 bg-[#507687] p-5 sm:p-7">
             <div class="max-w-xl">@include('profile.partials.update-profile-information-form')</div>
         </section>
-        <section class="rounded-xl border border-neutral-800 bg-[#111014] p-5 sm:p-7">
+        <section class="rounded-xl border border-neutral-800 bg-[#507687] p-5 sm:p-7">
             <div class="max-w-xl">@include('profile.partials.update-password-form')</div>
         </section>
-        <section class="rounded-xl border border-neutral-800 bg-[#111014] p-5 sm:p-7">
+        <section class="rounded-xl border border-neutral-800 bg-[#507687] p-5 sm:p-7">
             <div class="max-w-xl">@include('profile.partials.delete-user-form')</div>
         </section>
 
-        <section class="rounded-xl border border-neutral-800 bg-[#111014] p-5 sm:p-7">
+        <section class="rounded-xl border border-neutral-800 bg-[#507687] p-5 sm:p-7">
             <h2 class="text-lg font-semibold text-white">My Bucket Lists</h2>
             <div class="mt-4 divide-y divide-neutral-800">
                 @forelse ($lists as $list)
@@ -36,7 +36,7 @@
             </div>
         </section>
 
-        <section class="rounded-xl border border-neutral-800 bg-[#111014] p-5 sm:p-7">
+        <section class="rounded-xl border border-neutral-800 bg-[#507687] p-5 sm:p-7">
             <h2 class="text-lg font-semibold text-white">My Reviews &amp; Ratings</h2>
             <div class="mt-4 divide-y divide-neutral-800">
                 @forelse ($reviews as $review)
@@ -49,7 +49,7 @@
                         <div class="flex items-center gap-3">
                             <details>
                                 <summary class="cursor-pointer text-sm text-neutral-300 hover:text-white">Edit</summary>
-                                <form action="{{ route('reviews.update', $review) }}" method="POST" class="mt-3 w-64 space-y-2">@csrf @method('PATCH')<input type="number" name="rating" min="1" max="5" required value="{{ $review->rating }}" class="w-full rounded-lg border-neutral-700 bg-[#09070d] text-white"><textarea name="comment" rows="3" maxlength="2000" class="w-full rounded-lg border-neutral-700 bg-[#09070d] text-white">{{ $review->comment }}</textarea><button class="text-sm text-red-400 hover:text-red-300">Save changes</button></form>
+                                <form action="{{ route('reviews.update', $review) }}" method="POST" class="mt-3 w-64 space-y-2">@csrf @method('PATCH')<input type="number" name="rating" min="1" max="5" required value="{{ $review->rating }}" class="w-full rounded-lg border-neutral-700 bg-[#384B70] text-white"><textarea name="comment" rows="3" maxlength="2000" class="w-full rounded-lg border-neutral-700 bg-[#384B70] text-white">{{ $review->comment }}</textarea><button class="text-sm text-red-400 hover:text-red-300">Save changes</button></form>
                             </details>
                             <form action="{{ route('reviews.destroy', $review) }}" method="POST" data-confirm data-confirm-title="Delete this review?" data-confirm-message="Your review and its reactions will be permanently removed." data-confirm-label="Delete review">@csrf @method('DELETE')<button class="text-sm text-red-400 hover:text-red-300">Delete</button></form>
                         </div>

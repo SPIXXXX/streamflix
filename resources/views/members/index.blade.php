@@ -3,7 +3,7 @@
         <header class="mb-10 overflow-hidden rounded-3xl border border-sf-border bg-gradient-to-br from-sf-surface via-sf-surface to-sf-bg p-6 shadow-xl sm:p-9">
             <div class="grid gap-7 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,24rem)] lg:items-end">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-sf-blue">Find your co-reviewers</p>
+                    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-sf-text">Find your co-reviewers</p>
                     <h1 class="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">Members</h1>
                     <p class="mt-3 max-w-2xl text-sm leading-6 text-sf-muted sm:text-base">Discover reviewers, see what they think of the films you love, and explore their public movie lists.</p>
                 </div>
@@ -55,7 +55,7 @@
                         <h2 id="{{ $id }}-heading" class="text-xl font-semibold text-white sm:text-2xl">{{ $title }}</h2>
                         <p class="mt-1 text-sm text-sf-muted">{{ $description }}</p>
                     </div>
-                    <a href="{{ route('members.index', ['sort' => $sectionSort]) }}#members-directory" class="shrink-0 rounded-lg px-2 py-2 text-sm font-semibold text-sf-blue transition hover:text-white focus:outline-none focus:ring-2 focus:ring-sf-blue/50">View All <span aria-hidden="true">→</span></a>
+                    <a href="{{ route('members.index', ['sort' => $sectionSort]) }}#members-directory" class="shrink-0 rounded-lg px-2 py-2 text-sm font-semibold text-sf-text transition hover:text-white focus:outline-none focus:ring-2 focus:ring-sf-blue/50">View All <span aria-hidden="true">→</span></a>
                 </div>
                 @if ($sectionMembers->isEmpty())
                     <div class="rounded-2xl border border-sf-border bg-sf-surface/60 px-5 py-7 text-sm text-sf-muted">

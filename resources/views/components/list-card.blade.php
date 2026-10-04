@@ -15,7 +15,7 @@
 
 <a href="{{ $href }}" aria-label="Open {{ $title }}, {{ $count }} movies" @class(['group flex h-full flex-col rounded-2xl border border-sf-border bg-sf-surface p-4 shadow-sm transition duration-200 hover:-translate-y-1 hover:border-sf-blue/50 hover:bg-sf-surface-light hover:shadow-glow-blue focus:outline-none focus:ring-2 focus:ring-sf-blue sm:p-5', 'group/list-poster' => $posterMode])>
     <div class="flex items-start justify-between gap-3">
-        <span class="inline-flex h-11 w-11 items-center justify-center rounded-xl {{ $icon === 'heart' ? 'bg-pink-500/10 text-pink-300' : ($official ? 'bg-amber-400/10 text-amber-300' : 'bg-sf-blue/10 text-sf-blue') }}">
+        <span class="inline-flex h-11 w-11 items-center justify-center rounded-xl {{ $icon === 'heart' ? 'bg-pink-500/10 text-pink-300' : ($official ? 'bg-amber-400/10 text-amber-300' : 'bg-sf-blue/10 text-sf-text') }}">
             @if ($icon === 'heart')
                 <svg class="h-6 w-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg>
             @elseif ($official)
@@ -26,7 +26,7 @@
         </span>
         <div class="flex flex-wrap justify-end gap-1.5">
             @if ($category)
-                <span class="inline-flex items-center rounded-full border border-sf-blue/20 bg-sf-blue/10 px-2.5 py-1 text-[11px] font-medium text-sf-blue">{{ $category }}</span>
+                <span class="inline-flex items-center rounded-full border border-sf-blue/20 bg-sf-blue/10 px-2.5 py-1 text-[11px] font-medium text-sf-text">{{ $category }}</span>
             @endif
             @if ($visibility)
                 <span class="inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-medium {{ $visibility === 'Private' ? 'border-sf-border text-sf-muted' : 'border-emerald-500/20 bg-emerald-500/10 text-emerald-300' }}">{{ $visibility }}</span>
@@ -35,7 +35,7 @@
     </div>
 
     <div class="mt-4">
-        <h3 class="truncate text-lg font-semibold text-white group-hover:text-sf-blue">{{ $title }}</h3>
+        <h3 class="truncate text-lg font-semibold text-white group-hover:text-sf-text">{{ $title }}</h3>
         @unless ($posterMode)
             @if ($description)
                 <p class="mt-1 line-clamp-2 min-h-10 text-sm leading-5 text-sf-muted">{{ $description }}</p>
@@ -75,6 +75,6 @@
         @endif
     </div>
     @if ($posterMode)
-        <span class="mt-3 inline-flex items-center justify-end gap-1 text-sm font-semibold text-sf-blue transition group-hover:gap-2 group-hover:text-white">View List <span aria-hidden="true">→</span></span>
+        <span class="mt-3 inline-flex items-center justify-end gap-1 text-sm font-semibold text-sf-text transition group-hover:gap-2 group-hover:text-white">View List <span aria-hidden="true">→</span></span>
     @endif
 </a>

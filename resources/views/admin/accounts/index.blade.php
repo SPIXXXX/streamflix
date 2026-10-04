@@ -5,7 +5,7 @@
 @section('content')
     <header class="mb-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-sf-blue">Community management</p>
+            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-sf-text">Community management</p>
             <h1 class="mt-1 text-3xl font-bold tracking-tight text-white">Accounts</h1>
             <p class="mt-2 text-sm text-sf-muted">Manage members, review activity, and moderate accounts.</p>
         </div>
@@ -81,7 +81,7 @@
                                     <a href="{{ route('admin.accounts.show', $user) }}" class="group inline-flex min-w-0 items-center gap-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-sf-blue/50">
                                         <x-user-avatar :user="$user" size="h-10 w-10" text-size="text-sm" />
                                         <span class="min-w-0">
-                                            <span class="block max-w-64 truncate font-semibold text-white group-hover:text-sf-blue">{{ $user->name }}</span>
+                                            <span class="block max-w-64 truncate font-semibold text-white group-hover:text-sf-text">{{ $user->name }}</span>
                                             <span class="block max-w-64 truncate text-xs text-sf-muted">{{ $user->email }}</span>
                                         </span>
                                     </a>
@@ -116,7 +116,7 @@
                             <x-user-avatar :user="$user" size="h-12 w-12" text-size="text-base" />
                         </a>
                         <div class="min-w-0 flex-1">
-                            <a href="{{ route('admin.accounts.show', $user) }}" class="block truncate font-semibold text-white hover:text-sf-blue">{{ $user->name }}</a>
+                            <a href="{{ route('admin.accounts.show', $user) }}" class="block truncate font-semibold text-white hover:text-sf-text">{{ $user->name }}</a>
                             <p class="truncate text-xs text-sf-muted">{{ $user->email }}</p>
                             <div class="mt-2 flex flex-wrap gap-1.5">
                                 <x-admin.account-status-badge :status="$user->status" />

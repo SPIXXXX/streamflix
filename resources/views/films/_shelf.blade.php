@@ -3,7 +3,7 @@
         <div>
             <h2 id="{{ $id }}-title" class="text-xl font-semibold text-white sm:text-2xl">{{ $title }}</h2>
         </div>
-        <a href="{{ route('films.collections', $viewAll) }}" class="shrink-0 rounded-lg px-2 py-2 text-sm font-semibold text-sf-blue transition hover:text-white focus:outline-none focus:ring-2 focus:ring-sf-blue/50">View All <span aria-hidden="true">→</span></a>
+        <a href="{{ route('films.collections', $viewAll) }}" class="shrink-0 rounded-lg px-2 py-2 text-sm font-semibold text-sf-text transition hover:text-white focus:outline-none focus:ring-2 focus:ring-sf-blue/50">View All <span aria-hidden="true">→</span></a>
     </div>
     @if ($films->isEmpty())
         <div class="rounded-2xl border border-sf-border bg-sf-surface/70 px-5 py-8 text-sm text-sf-muted">{{ $emptyMessage }}</div>

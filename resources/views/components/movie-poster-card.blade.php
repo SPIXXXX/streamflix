@@ -23,7 +23,7 @@
         </div>
         <div class="mt-2.5 flex items-start justify-between gap-2 px-1 pb-3">
             <div class="min-w-0">
-                <h3 class="truncate text-sm font-semibold text-gray-100 transition group-hover:text-sf-blue">{{ $film->title }}</h3>
+                <h3 class="truncate text-sm font-semibold text-gray-100 transition group-hover:text-sf-text">{{ $film->title }}</h3>
                 <p class="mt-0.5 text-xs text-sf-muted">{{ $film->release_year ?: $film->release_date?->format('Y') ?: 'Year unavailable' }}</p>
             </div>
             @if (($film->reviews_count ?? 0) > 0)
@@ -34,7 +34,7 @@
 
     @if ($adminMode)
         <div class="grid grid-cols-1 gap-2 border-t border-sf-border px-1 pt-3 sm:grid-cols-2">
-            <a href="{{ route('admin.films.edit', $film) }}" class="inline-flex h-10 min-w-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-sf-blue/25 bg-sf-blue/10 px-3 text-sm font-semibold text-blue-200 transition hover:border-sf-blue/50 hover:bg-sf-blue/20 hover:text-white focus:outline-none focus:ring-2 focus:ring-sf-blue/50">
+            <a href="{{ route('admin.films.edit', $film) }}" class="inline-flex h-10 min-w-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-sf-blue/25 bg-sf-blue/10 px-3 text-sm font-semibold text-sf-text transition hover:border-sf-blue/50 hover:bg-sf-blue/20 hover:text-white focus:outline-none focus:ring-2 focus:ring-sf-blue/50">
                 <svg class="h-4 w-4 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14 5 5 5M4 20l4.5-1 11-11a2.12 2.12 0 0 0-3-3l-11 11L4 20Z"/></svg>
                 <span>Edit</span>
             </a>

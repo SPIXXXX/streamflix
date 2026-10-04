@@ -46,7 +46,7 @@
                     />
 
                     <x-input-error :messages="$errors->userDeletion->get('password')" class="mt-2" />
-                    <a href="{{ route('google.redirect', ['intent' => 'delete-account']) }}" class="mt-3 inline-block text-sm text-blue-500 hover:underline">
+                    <a href="{{ route('google.redirect', ['intent' => 'delete-account']) }}" class="mt-3 inline-block text-sm text-sf-text hover:underline">
                         I use Google — verify and delete
                     </a>
                 </div>

@@ -7,7 +7,7 @@
         </a>
         <div class="min-w-0 flex-1">
             <div class="flex flex-wrap items-center gap-2">
-                <h3 class="truncate text-base font-semibold text-white transition group-hover:text-sf-blue">
+                <h3 class="truncate text-base font-semibold text-white transition group-hover:text-sf-text">
                     <a href="{{ route('members.show', $member) }}" class="rounded-sm focus:outline-none focus:ring-2 focus:ring-sf-blue">{{ $member->name }}</a>
                 </h3>
                 @if ($member->is_featured)
@@ -26,7 +26,7 @@
         @endif
     </div>
 
-    <a href="{{ route('members.show', $member) }}" class="mt-5 inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-sf-blue/30 bg-sf-blue/10 px-4 text-sm font-semibold text-sf-blue transition hover:border-sf-blue/60 hover:bg-sf-blue hover:text-white focus:outline-none focus:ring-2 focus:ring-sf-blue/50">
+    <a href="{{ route('members.show', $member) }}" class="mt-5 inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-sf-blue/30 bg-sf-blue/10 px-4 text-sm font-semibold text-sf-text transition hover:border-sf-blue/60 hover:bg-sf-blue hover:text-white focus:outline-none focus:ring-2 focus:ring-sf-blue/50">
         View Profile
         <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7-7 7 7-7 7"/></svg>
     </a>

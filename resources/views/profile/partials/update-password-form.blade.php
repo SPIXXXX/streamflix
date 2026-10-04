@@ -23,7 +23,7 @@
                 <x-input-label for="update_password_current_password" :value="__('Current Password')" />
                 <x-password-input id="update_password_current_password" name="current_password" autocomplete="current-password" />
                 <x-input-error :messages="$errors->updatePassword->get('current_password')" class="mt-2" />
-                <a href="{{ route('google.redirect', ['intent' => 'password']) }}" class="mt-2 inline-block text-sm text-blue-500 hover:underline">
+                <a href="{{ route('google.redirect', ['intent' => 'password']) }}" class="mt-2 inline-block text-sm text-sf-text hover:underline">
                     I use Google — verify my account
                 </a>
             </div>

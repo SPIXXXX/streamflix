@@ -5,6 +5,64 @@
 @source "../views";
 @source "../../node_modules/flowbite";
 
+@theme {
+    --color-white: #fcfaee;
+    --color-slate-950: #24334f;
+    --color-slate-900: #384b70;
+    --color-slate-800: #507687;
+    --color-slate-700: #64889a;
+    --color-slate-600: #718c99;
+    --color-slate-500: #a6bfbe;
+    --color-slate-400: #d4dfdf;
+    --color-slate-300: #e3e8d9;
+    --color-gray-950: #24334f;
+    --color-gray-900: #384b70;
+    --color-gray-800: #507687;
+    --color-gray-700: #64889a;
+    --color-gray-600: #718c99;
+    --color-gray-500: #a6bfbe;
+    --color-gray-400: #d4dfdf;
+    --color-gray-300: #e3e8d9;
+    --color-blue-950: #384b70;
+    --color-blue-900: #507687;
+    --color-blue-800: #64889a;
+    --color-blue-700: #b8001f;
+    --color-blue-600: #b8001f;
+    --color-blue-500: #b8001f;
+    --color-blue-400: #940019;
+}
+
+:root,
+.dark {
+    color-scheme: dark;
+    --color-neutral-primary-soft: #384b70;
+    --color-neutral-primary: #384b70;
+    --color-neutral-primary-medium: #507687;
+    --color-neutral-primary-strong: #64889a;
+    --color-neutral-secondary-soft: #507687;
+    --color-neutral-secondary: #507687;
+    --color-neutral-secondary-medium: #64889a;
+    --color-neutral-secondary-strong: #64889a;
+    --color-neutral-tertiary-soft: #64889a;
+    --color-neutral-tertiary: #64889a;
+    --color-neutral-tertiary-medium: #718c99;
+    --color-heading: #fcfaee;
+    --color-body: #d4dfdf;
+    --color-body-subtle: #d4dfdf;
+    --color-default: #718c99;
+    --color-default-medium: #718c99;
+    --color-brand: #b8001f;
+    --color-brand-strong: #940019;
+    --color-brand-light: #b8001f;
+    --color-brand-medium: #507687;
+    --color-brand-subtle: #718c99;
+    --color-fg-brand: #fcfaee;
+    --color-fg-brand-strong: #fcfaee;
+    --color-fg-brand-subtle: #d4dfdf;
+    --color-danger: #b8001f;
+    --color-danger-strong: #940019;
+}
+
 [x-cloak] {
     display: none !important;
 }

@@ -35,7 +35,7 @@
                                 {{ $list->title }} <span class="text-sm text-gray-500">({{ $list->is_public ? 'Public' : 'Private' }} · {{ $list->films_count }} films)</span>
                             </a>
                             <div class="flex gap-3 text-sm">
-                                <a href="{{ route('lists.edit', $list) }}" class="text-blue-500 hover:underline">Edit</a>
+                                <a href="{{ route('lists.edit', $list) }}" class="text-sf-text hover:underline">Edit</a>
                                 <form action="{{ route('lists.destroy', $list) }}" method="POST" data-confirm data-confirm-title="Delete this list?" data-confirm-message="{{ $list->title }} and its saved movie entries will be permanently removed." data-confirm-label="Delete list">
                                     @csrf @method('DELETE')
                                     <button class="text-red-500 hover:underline">Delete</button>
@@ -58,19 +58,19 @@
                                 <a href="{{ route('films.show', $review->film) }}" class="text-gray-900 dark:text-gray-100 hover:underline">
                                     {{ $review->film->title }}
                                 </a>
-                                <span class="text-blue-500 ml-2">★ {{ $review->rating }}</span>
+                                <span class="text-sf-text ml-2">★ {{ $review->rating }}</span>
                                 <p class="text-sm text-gray-500 dark:text-gray-400">{{ $review->comment }}</p>
                             </div>
                             <div class="flex items-center gap-3">
                                 <details class="text-sm">
-                                    <summary class="cursor-pointer text-blue-500 hover:underline">Edit</summary>
+                                    <summary class="cursor-pointer text-sf-text hover:underline">Edit</summary>
                                     <form action="{{ route('reviews.update', $review) }}" method="POST" class="mt-3 min-w-64 space-y-2">
                                         @csrf @method('PATCH')
                                         <label class="block text-xs text-gray-500">Rating (1–5)</label>
                                         <input type="number" name="rating" min="1" max="5" required value="{{ $review->rating }}" class="w-full rounded border-gray-300 dark:border-sf-border dark:bg-sf-bg dark:text-white">
                                         <label class="block text-xs text-gray-500">Review</label>
                                         <textarea name="comment" rows="3" maxlength="2000" class="w-full rounded border-gray-300 dark:border-sf-border dark:bg-sf-bg dark:text-white">{{ $review->comment }}</textarea>
-                                        <button class="text-blue-500 hover:underline">Save changes</button>
+                                        <button class="text-sf-text hover:underline">Save changes</button>
                                     </form>
                                 </details>
                                 <form action="{{ route('reviews.destroy', $review) }}" method="POST" data-confirm data-confirm-title="Delete this review?" data-confirm-message="Your review and its reactions will be permanently removed." data-confirm-label="Delete review">
