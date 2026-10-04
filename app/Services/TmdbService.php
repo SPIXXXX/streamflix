@@ -164,4 +164,30 @@ class TmdbService
     {
         return $path ? "https://image.tmdb.org/t/p/{$size}{$path}" : null;
     }
+
+    /** @return array{contents: string, content_type: string}|null */
+    public function downloadPoster(?string $path): ?array
+    {
+        if (! $path || ! preg_match('/^\/[A-Za-z0-9._-]+$/', $path)) {
+            return null;
+        }
+
+        try {
+            $response = Http::timeout(8)->get($this->posterUrl($path, 'w500'));
+        } catch (ConnectionException) {
+            return null;
+        }
+
+        $contentType = strtolower(trim(explode(';', (string) $response->header('Content-Type'))[0]));
+        if (! $response->successful() || ! str_starts_with($contentType, 'image/')) {
+            return null;
+        }
+
+        $contents = $response->body();
+        if ($contents === '' || strlen($contents) > 10 * 1024 * 1024) {
+            return null;
+        }
+
+        return ['contents' => $contents, 'content_type' => $contentType];
+    }
 }

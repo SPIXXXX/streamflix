@@ -36,6 +36,27 @@ class PublicMediaStorage
         return rtrim($this->required('public_url'), '/').'/'.$key;
     }
 
+    public function storeContents(string $contents, string $directory, string $extension, string $contentType): string
+    {
+        $key = trim($directory, '/').'/'.Str::uuid().'.'.$extension;
+
+        if (! config('services.r2.enabled')) {
+            Storage::disk('public')->put($key, $contents);
+
+            return $key;
+        }
+
+        $this->client()->putObject([
+            'Bucket' => $this->required('bucket'),
+            'Key' => $key,
+            'Body' => $contents,
+            'ContentType' => $contentType,
+            'CacheControl' => 'public, max-age=31536000, immutable',
+        ]);
+
+        return rtrim($this->required('public_url'), '/').'/'.$key;
+    }
+
     public function delete(?string $path): void
     {
         if (! $path) {

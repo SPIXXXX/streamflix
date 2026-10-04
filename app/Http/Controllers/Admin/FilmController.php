@@ -46,7 +46,7 @@ class FilmController extends Controller
         if ($request->hasFile('poster')) {
             $validated['poster_path'] = app(PublicMediaStorage::class)->store($request->file('poster'), 'posters');
         } elseif (! empty($validated['tmdb_poster_path'])) {
-            $validated['poster_path'] = $validated['tmdb_poster_path'];
+            $validated['poster_path'] = $this->storeTmdbPoster($validated['tmdb_poster_path']);
         }
         unset($validated['tmdb_poster_path']);
 
@@ -78,7 +78,7 @@ class FilmController extends Controller
         if ($request->hasFile('poster')) {
             $validated['poster_path'] = app(PublicMediaStorage::class)->store($request->file('poster'), 'posters');
         } elseif (! empty($validated['tmdb_poster_path'])) {
-            $validated['poster_path'] = $validated['tmdb_poster_path'];
+            $validated['poster_path'] = $this->storeTmdbPoster($validated['tmdb_poster_path']);
         }
         unset($validated['tmdb_poster_path']);
 
@@ -160,10 +160,37 @@ class FilmController extends Controller
             'release_year' => $details['release_date'] ? substr($details['release_date'], 0, 4) : null,
             'release_date' => $details['release_date'] ?: null,
             'cast' => collect($details['credits']['cast'] ?? [])->take(6)->pluck('name')->join(', '),
-            'poster_path' => $details['poster_path'] ?? null,
+            'poster_path' => $this->storeTmdbPoster($details['poster_path'] ?? null),
         ]);
         $film->syncTmdbKeywords(data_get($details, 'keywords.keywords', []));
 
         return redirect()->route('admin.films.index')->with('status', "Imported \"{$film->title}\"!");
+    }
+
+    private function storeTmdbPoster(?string $posterPath): ?string
+    {
+        $image = $this->tmdb->downloadPoster($posterPath);
+        if (! $image) {
+            return $posterPath;
+        }
+
+        $extension = match ($image['content_type']) {
+            'image/jpeg', 'image/jpg' => 'jpg',
+            'image/png' => 'png',
+            'image/webp' => 'webp',
+            'image/avif' => 'avif',
+            'image/gif' => 'gif',
+            default => null,
+        };
+        if (! $extension) {
+            return $posterPath;
+        }
+
+        return app(PublicMediaStorage::class)->storeContents(
+            $image['contents'],
+            'posters',
+            $extension,
+            $image['content_type'],
+        );
     }
 }
