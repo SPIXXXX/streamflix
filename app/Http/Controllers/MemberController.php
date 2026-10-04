@@ -45,6 +45,7 @@ class MemberController extends Controller
         $reviews = Review::query()
             ->where('user_id', $user->id)
             ->with([
+                'user',
                 'film',
                 'comments.user',
                 'reactions' => fn (Builder $reactions) => $reactions->where('user_id', auth()->id()),
