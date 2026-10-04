@@ -67,6 +67,18 @@
             tmdbStatus.classList.toggle('hidden', !visible);
         }
 
+        function setSearching(searching) {
+            tmdbLookupBtn.disabled = searching;
+            tmdbLookupBtn.textContent = searching ? 'Searching TMDB…' : 'Search movies';
+            if (searching) {
+                tmdbLookupBtn.dataset.loading = 'true';
+                tmdbLookupBtn.setAttribute('aria-busy', 'true');
+            } else {
+                delete tmdbLookupBtn.dataset.loading;
+                tmdbLookupBtn.removeAttribute('aria-busy');
+            }
+        }
+
         function renderResults(results) {
             tmdbResults.replaceChildren();
             for (const film of results) {
@@ -252,7 +264,7 @@
         async function searchTmdb() {
             const query = tmdbLookupInput.value.trim();
             if (query.length < 2) return setStatus('Enter at least two characters to search.');
-            tmdbLookupBtn.disabled = true;
+            setSearching(true);
             setStatus('Searching TMDB...');
             tmdbResults.replaceChildren();
             try {
@@ -265,7 +277,7 @@
                 setStatus(data.results?.length ? 'Click a result to select it, then search another title to add more.' : 'No matching films found.');
             } catch (error) {
                 setStatus(error.message || 'TMDB search failed.');
-            } finally { tmdbLookupBtn.disabled = false; }
+            } finally { setSearching(false); }
         }
 
         tmdbLookupBtn.addEventListener('click', searchTmdb);

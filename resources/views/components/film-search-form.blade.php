@@ -1,5 +1,5 @@
 @php($selectedGenres = $filters['genres'] ?? [])
-<form method="GET" action="{{ $action }}" class="flex w-full flex-col gap-2 sm:flex-row sm:items-stretch sm:gap-0">
+<form method="GET" action="{{ $action }}" data-loading-form class="flex w-full flex-col gap-2 sm:flex-row sm:items-stretch sm:gap-0">
     <div x-data="{ open: false, selectedCount: @js(count($selectedGenres)) }" class="relative shrink-0">
         <button type="button" @click="open = !open" @click.outside="open = false" :aria-expanded="open.toString()" aria-haspopup="listbox" aria-controls="film-category-options"
             class="inline-flex w-full items-center justify-between gap-2 rounded-lg border border-sf-border bg-sf-surface px-4 py-2.5 text-sm font-medium text-white transition hover:bg-sf-surface-light focus:outline-none focus:ring-2 sm:min-w-44 sm:rounded-r-none focus:ring-sf-blue/50">

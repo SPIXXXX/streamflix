@@ -7,7 +7,7 @@
     @php($visibleCount = $visibleMovies->count())
     @php($mobileExtraCount = max(0, $movieCount - min($visibleCount, 3)))
     @php($desktopExtraCount = max(0, $movieCount - $visibleCount))
-    <div class="group/list-poster relative isolate h-48 w-full overflow-visible bg-transparent sm:h-52" role="img" aria-label="{{ $movieCount }} {{ \Illuminate\Support\Str::plural('movie', $movieCount) }} in {{ $list->title }}">
+    <div class="group/list-poster relative isolate h-56 w-full overflow-visible bg-transparent sm:h-60" role="img" aria-label="{{ $movieCount }} {{ \Illuminate\Support\Str::plural('movie', $movieCount) }} in {{ $list->title }}">
         @if ($visibleMovies->isEmpty())
             <div class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-center">
                 <span class="flex h-14 w-14 items-center justify-center text-sf-muted">
@@ -31,7 +31,7 @@
                     default => [-9, -3, 3, 9][$loop->index],
                 })
                 <div @class([
-                    'absolute top-5 h-36 w-[4.5rem] -translate-x-1/2 overflow-hidden rounded-xl border border-white/20 bg-slate-800 shadow-xl shadow-black/50 transition duration-300 ease-out group-hover/list-poster:-translate-y-2 group-hover/list-poster:shadow-2xl sm:top-4 sm:h-40 sm:w-[5.5rem]',
+                    'absolute top-5 h-40 w-[5.25rem] -translate-x-1/2 overflow-hidden rounded-xl border border-white/20 bg-slate-800 shadow-xl shadow-black/50 transition duration-300 ease-out group-hover/list-poster:-translate-y-2 group-hover/list-poster:shadow-2xl sm:top-4 sm:h-44 sm:w-[6rem]',
                     'hidden md:block' => $loop->index === 3,
                 ]) style="left: {{ $position }}%; z-index: {{ 10 + $loop->index }}; rotate: {{ $rotation }}deg">
                     <x-film-poster-image :film="$film" container-class="h-full w-full transition duration-300 group-hover/list-poster:scale-[1.035]" :alt="$film->title.' poster'" />
@@ -48,16 +48,16 @@
     </div>
 @else
 
-<div class="group/list-poster relative h-36 w-60 shrink-0 sm:h-40 sm:w-72" aria-label="Movie poster collage for {{ $list->title }}">
+<div class="group/list-poster relative h-44 w-[21rem] shrink-0 sm:h-48 sm:w-[23rem]" aria-label="Movie poster collage for {{ $list->title }}">
     @forelse($visibleMovies as $film)
-        @php($offset = $loop->index * 3.25)
+        @php($offset = $loop->index * 3.75)
         @php($rotation = ($loop->index % 2 === 0 ? -1 : 1) * (3 - $loop->index))
-        <div @class(['absolute top-2 h-28 w-[4.75rem] overflow-hidden rounded-lg border border-white/15 bg-slate-800 shadow-lg shadow-black/40 transition duration-300 ease-out group-hover/list-poster:-translate-y-2 group-hover/list-poster:rotate-0 group-hover/list-poster:shadow-xl sm:top-1 sm:h-32 sm:w-[5.25rem]', 'hidden sm:block' => $loop->index === 3]) style="left: {{ $offset }}rem; z-index: {{ 10 + $loop->index }}; transform: rotate({{ $rotation }}deg)">
+        <div @class(['absolute top-2 h-36 w-24 overflow-hidden rounded-lg border border-white/15 bg-slate-800 shadow-lg shadow-black/40 transition duration-300 ease-out group-hover/list-poster:-translate-y-2 group-hover/list-poster:rotate-0 group-hover/list-poster:shadow-xl sm:top-1 sm:h-40 sm:w-[6.75rem]', 'hidden sm:block' => $loop->index === 3]) style="left: {{ $offset }}rem; z-index: {{ 10 + $loop->index }}; transform: rotate({{ $rotation }}deg)">
             <x-film-poster-image :film="$film" container-class="h-full w-full" :alt="$film->title.' poster'" />
             <div class="pointer-events-none absolute inset-x-0 bottom-0 translate-y-full bg-gradient-to-t from-black/95 via-black/70 to-transparent px-1.5 pb-1.5 pt-5 text-[9px] font-medium leading-tight text-white opacity-0 transition duration-200 group-hover/list-poster:translate-y-0 group-hover/list-poster:opacity-100">{{ $film->title }}</div>
         </div>
     @empty
-        <div class="absolute left-0 top-2 flex h-28 w-[4.75rem] items-center justify-center rounded-lg border border-dashed border-slate-600 bg-slate-800 p-2 text-center text-[10px] text-slate-500 sm:top-1 sm:h-32 sm:w-[5.25rem]">No Poster</div>
+        <div class="absolute left-0 top-2 flex h-36 w-24 items-center justify-center rounded-lg border border-dashed border-slate-600 bg-slate-800 p-2 text-center text-xs text-slate-500 sm:top-1 sm:h-40 sm:w-[6.75rem]">No Poster</div>
     @endforelse
     @if($movieCount > 0)
         <span class="absolute bottom-0 right-0 z-30 rounded-full border border-white/10 bg-slate-950/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-slate-200 shadow">{{ $movieCount }} {{ \Illuminate\Support\Str::plural('movie', $movieCount) }}</span>
