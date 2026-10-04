@@ -48,17 +48,14 @@
                                     $isPopularThisWeek = $popularThisWeek->contains('id', $film->id);
                                     $releaseYear = $film->release_year ?: $film->release_date?->format('Y');
                                 @endphp
-                                <article data-carousel-slide @if ($index !== 0) hidden @endif aria-hidden="{{ $index === 0 ? 'false' : 'true' }}" aria-roledescription="slide" aria-label="{{ $index + 1 }} of {{ $carouselFilms->count() }}" class="relative isolate min-h-[390px] sm:min-h-[430px] lg:min-h-[460px]">
+                                <article data-carousel-slide @if ($index !== 0) hidden @endif aria-hidden="{{ $index === 0 ? 'false' : 'true' }}" aria-roledescription="slide" aria-label="{{ $index + 1 }} of {{ $carouselFilms->count() }}" class="relative isolate h-[470px] sm:h-[500px] lg:h-[520px]">
                                     @if ($posterUrl)
-                                        <img src="{{ $posterUrl }}" alt="" aria-hidden="true" class="absolute inset-0 -z-20 h-full w-full scale-110 object-cover object-center opacity-35 blur-xl" @if ($index > 0) loading="lazy" @else fetchpriority="high" @endif onerror="this.style.display='none'">
+                                        <img src="{{ $posterUrl }}" alt="" class="absolute inset-0 -z-20 h-full w-full object-cover object-center opacity-55 transition duration-700 group-hover:scale-[1.02]" @if ($index > 0) loading="lazy" @else fetchpriority="high" @endif onerror="this.style.display='none'">
                                     @endif
                                     <div class="absolute inset-0 -z-10 bg-gradient-to-r from-[#0F1726] via-[#0F1726]/90 to-[#0F1726]/30"></div>
                                     <div class="absolute inset-0 -z-10 bg-gradient-to-t from-[#0F1726]/90 via-transparent to-[#0F1726]/20"></div>
-                                    @if ($posterUrl)
-                                        <img src="{{ $posterUrl }}" alt="{{ $film->title }} poster" class="absolute inset-y-0 right-0 z-0 h-full w-full object-contain object-right opacity-95 lg:w-1/2" @if ($index > 0) loading="lazy" @else fetchpriority="high" @endif onerror="this.style.display='none'">
-                                    @endif
 
-                                    <div class="relative z-10 flex min-h-[390px] flex-col justify-end p-6 pb-24 sm:min-h-[430px] sm:p-10 sm:pb-24 lg:min-h-[460px] lg:max-w-[48%] lg:p-12 lg:pb-24">
+                                    <div class="relative z-10 flex h-full flex-col justify-end p-6 pb-24 sm:p-10 sm:pb-24 lg:max-w-3xl lg:p-12 lg:pb-24">
                                         <div class="mb-4 flex flex-wrap items-center gap-2">
                                             <span class="rounded-full bg-[#B8001F] px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-white">{{ $isPopularThisWeek ? 'Popular this week' : 'Recently added' }}</span>
                                             @if ($releaseYear)
@@ -68,7 +65,7 @@
                                                 <span class="rounded-full border border-white/20 bg-black/20 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur">{{ \Illuminate\Support\Str::before($film->genre, ',') }}</span>
                                             @endif
                                         </div>
-                                        <h3 class="max-w-2xl text-3xl font-black leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl">{{ $film->title }}</h3>
+                                        <h3 class="line-clamp-2 max-w-2xl text-3xl font-black leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl">{{ $film->title }}</h3>
                                         <p class="mt-4 line-clamp-3 max-w-xl text-sm leading-6 text-white/75 sm:text-base sm:leading-7">{{ $film->synopsis ?: 'Discover this film and see what the Cinevault community thinks.' }}</p>
                                         <div class="mt-6 flex flex-wrap items-center gap-4">
                                             <a href="{{ route('films.show', $film) }}" class="inline-flex min-h-12 items-center gap-2 rounded-full bg-[#B8001F] px-6 py-3 text-sm font-bold text-white shadow-lg shadow-black/20 transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-[#0F1726]">
