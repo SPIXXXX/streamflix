@@ -30,7 +30,7 @@ class AdminFilmDetailController extends Controller
             'id' => $member->tmdb_id,
             'name' => $member->name,
             'character' => $member->pivot->character,
-            'profile_url' => $member->pivot->profile_path ?: $member->profileUrl(),
+            'profile_url' => $member->filmProfileUrl(),
         ])->all();
         $userLists = auth()->user()->movieLists()
             ->where('is_official', false)

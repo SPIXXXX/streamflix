@@ -47,4 +47,13 @@ class CastMember extends Model
 
         return Storage::disk('public')->exists($path) ? Storage::disk('public')->url($path) : null;
     }
+
+    public function filmProfileUrl(): ?string
+    {
+        $tmdbPath = trim((string) $this->pivot?->tmdb_profile_path);
+
+        return $tmdbPath !== ''
+            ? app(TmdbService::class)->posterUrl($tmdbPath, 'w185')
+            : $this->profileUrl();
+    }
 }

@@ -165,7 +165,7 @@ class FilmController extends Controller
             'id' => $member->tmdb_id,
             'name' => $member->name,
             'character' => $member->pivot->character,
-            'profile_url' => $member->pivot->profile_path ?: $member->profileUrl(),
+            'profile_url' => $member->filmProfileUrl(),
         ])->all();
         $userLists = auth()->user()?->movieLists()
             ->where('is_official', false)
@@ -202,7 +202,7 @@ class FilmController extends Controller
     {
         $filmCastMember = $film->castMembers()->where('tmdb_id', $personId)->first();
         $castMember = CastMember::where('tmdb_id', $personId)->first();
-        $filmProfileUrl = $filmCastMember?->pivot->profile_path;
+        $filmProfileUrl = $filmCastMember?->filmProfileUrl();
         if ($castMember?->biography_fetched_at) {
             return response()->json($this->castMemberPayload($castMember, $filmProfileUrl));
         }
