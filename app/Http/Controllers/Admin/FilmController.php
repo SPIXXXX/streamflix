@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Film;
+use App\Services\CastMemberSyncService;
 use App\Services\PublicMediaStorage;
 use App\Services\TmdbService;
 use Illuminate\Http\Request;
@@ -50,7 +51,10 @@ class FilmController extends Controller
         }
         unset($validated['tmdb_poster_path']);
 
-        Film::create($validated);
+        $film = Film::create($validated);
+        if ($film->tmdb_id) {
+            app(CastMemberSyncService::class)->sync($film, $this->tmdb->castMembers((int) $film->tmdb_id));
+        }
 
         return redirect()->route('admin.films.index')->with('status', 'Film added!');
     }
@@ -83,6 +87,9 @@ class FilmController extends Controller
         unset($validated['tmdb_poster_path']);
 
         $film->update($validated);
+        if ($film->tmdb_id) {
+            app(CastMemberSyncService::class)->sync($film, $this->tmdb->castMembers((int) $film->tmdb_id));
+        }
 
         return redirect()->route('admin.films.index')->with('status', 'Film updated!');
     }
@@ -162,6 +169,7 @@ class FilmController extends Controller
             'cast' => collect($details['credits']['cast'] ?? [])->take(6)->pluck('name')->join(', '),
             'poster_path' => $this->storeTmdbPoster($details['poster_path'] ?? null),
         ]);
+        app(CastMemberSyncService::class)->sync($film, $details['credits']['cast'] ?? []);
         $film->syncTmdbKeywords(data_get($details, 'keywords.keywords', []));
 
         return redirect()->route('admin.films.index')->with('status', "Imported \"{$film->title}\"!");

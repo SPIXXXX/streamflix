@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CastMember;
 use App\Models\Film;
 use App\Models\Review;
+use App\Services\CastMemberSyncService;
 use App\Services\TmdbService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
@@ -143,8 +145,12 @@ class FilmController extends Controller
         return view('films.collection', compact('category', 'films', 'title'));
     }
 
-    public function show(Film $film, TmdbService $tmdb): View
+    public function show(Film $film, TmdbService $tmdb, CastMemberSyncService $castSync): View
     {
+        if ($film->tmdb_id && ! $film->castMembers()->exists()) {
+            $castSync->sync($film, $tmdb->castMembers((int) $film->tmdb_id));
+        }
+
         $film->load([
             'reviews' => fn ($query) => $query
                 ->with('user')
@@ -153,8 +159,14 @@ class FilmController extends Controller
                     'reactions as disagree_count' => fn (Builder $reactions) => $reactions->where('reaction', 'disagree'),
                 ]),
             'teasers',
+            'castMembers',
         ])->loadAvg('reviews', 'rating');
-        $cast = $film->tmdb_id ? $tmdb->castMembers((int) $film->tmdb_id) : [];
+        $cast = $film->castMembers->map(fn (CastMember $member): array => [
+            'id' => $member->tmdb_id,
+            'name' => $member->name,
+            'character' => $member->pivot->character,
+            'profile_url' => $member->profileUrl(),
+        ])->all();
         $userLists = auth()->user()?->movieLists()
             ->where('is_official', false)
             ->withCount('films')
@@ -188,13 +200,49 @@ class FilmController extends Controller
 
     public function castMember(int $personId, TmdbService $tmdb): JsonResponse
     {
+        $castMember = CastMember::where('tmdb_id', $personId)->first();
+        if ($castMember?->biography_fetched_at) {
+            return response()->json($this->castMemberPayload($castMember));
+        }
+
         $person = $tmdb->personDetails($personId);
 
         if (! $person) {
-            return response()->json(['message' => 'Cast details are not available.'], 404);
+            if (! $castMember) {
+                return response()->json(['message' => 'Cast details are not available.'], 404);
+            }
+
+            return response()->json($this->castMemberPayload($castMember));
         }
 
-        return response()->json($person);
+        $castMember = CastMember::updateOrCreate(
+            ['tmdb_id' => $personId],
+            [
+                'name' => $person['name'],
+                'biography' => $person['biography'],
+                'birthday' => $person['birthday'],
+                'deathday' => $person['deathday'],
+                'place_of_birth' => $person['place_of_birth'],
+                'known_for_department' => $person['known_for_department'],
+                'biography_fetched_at' => now(),
+            ],
+        );
+
+        return response()->json($this->castMemberPayload($castMember));
+    }
+
+    private function castMemberPayload(CastMember $castMember): array
+    {
+        return [
+            'id' => $castMember->tmdb_id,
+            'name' => $castMember->name,
+            'biography' => $castMember->biography,
+            'birthday' => $castMember->birthday?->toDateString(),
+            'deathday' => $castMember->deathday?->toDateString(),
+            'place_of_birth' => $castMember->place_of_birth,
+            'known_for_department' => $castMember->known_for_department,
+            'profile_url' => $castMember->profileUrl(),
+        ];
     }
 
     public function storeReview(Request $request, Film $film)

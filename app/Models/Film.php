@@ -45,6 +45,14 @@ class Film extends Model
         return $this->belongsToMany(TmdbKeyword::class, 'film_tmdb_keyword');
     }
 
+    public function castMembers(): BelongsToMany
+    {
+        return $this->belongsToMany(CastMember::class, 'film_cast')
+            ->withPivot(['character', 'cast_order'])
+            ->orderByPivot('cast_order')
+            ->withTimestamps();
+    }
+
     public function syncTmdbKeywords(array $keywords): void
     {
         DB::transaction(function () use ($keywords): void {

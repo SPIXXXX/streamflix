@@ -94,7 +94,7 @@ class TmdbService
 
     public function castMembers(int $tmdbId, int $limit = 12): array
     {
-        $cacheKey = "tmdb.movie.{$tmdbId}.cast.v2";
+        $cacheKey = "tmdb.movie.{$tmdbId}.cast.v3";
         $cachedCast = Cache::get($cacheKey);
         if (is_array($cachedCast)) {
             return $cachedCast;
@@ -119,6 +119,8 @@ class TmdbService
                 'id' => (int) ($member['id'] ?? 0),
                 'name' => $member['name'] ?? 'Unknown cast member',
                 'character' => $member['character'] ?? null,
+                'order' => (int) ($member['order'] ?? 0),
+                'profile_path' => $member['profile_path'] ?? null,
                 'profile_url' => $this->posterUrl($member['profile_path'] ?? null, 'w185'),
             ])
             ->filter(fn (array $member): bool => $member['id'] > 0)
@@ -166,14 +168,14 @@ class TmdbService
     }
 
     /** @return array{contents: string, content_type: string}|null */
-    public function downloadPoster(?string $path): ?array
+    public function downloadPoster(?string $path, string $size = 'w500'): ?array
     {
         if (! $path || ! preg_match('/^\/[A-Za-z0-9._-]+$/', $path)) {
             return null;
         }
 
         try {
-            $response = Http::timeout(8)->get($this->posterUrl($path, 'w500'));
+            $response = Http::timeout(8)->get($this->posterUrl($path, $size));
         } catch (ConnectionException) {
             return null;
         }

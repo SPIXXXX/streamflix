@@ -2,15 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CastMember;
 use App\Models\Film;
+use App\Services\CastMemberSyncService;
 use App\Services\TmdbService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
 
 class AdminFilmDetailController extends Controller
 {
-    public function show(Film $film, TmdbService $tmdb): View
+    public function show(Film $film, TmdbService $tmdb, CastMemberSyncService $castSync): View
     {
+        if ($film->tmdb_id && ! $film->castMembers()->exists()) {
+            $castSync->sync($film, $tmdb->castMembers((int) $film->tmdb_id));
+        }
+
         $film->load([
             'reviews' => fn ($query) => $query
                 ->with('user')
@@ -19,8 +25,14 @@ class AdminFilmDetailController extends Controller
                     'reactions as disagree_count' => fn ($reactions) => $reactions->where('reaction', 'disagree'),
                 ]),
             'teasers',
+            'castMembers',
         ])->loadAvg('reviews', 'rating');
-        $cast = $film->tmdb_id ? $tmdb->castMembers((int) $film->tmdb_id) : [];
+        $cast = $film->castMembers->map(fn (CastMember $member): array => [
+            'id' => $member->tmdb_id,
+            'name' => $member->name,
+            'character' => $member->pivot->character,
+            'profile_url' => $member->profileUrl(),
+        ])->all();
         $userLists = auth()->user()->movieLists()
             ->where('is_official', false)
             ->withCount('films')
