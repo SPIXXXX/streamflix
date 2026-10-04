@@ -48,14 +48,17 @@
                                     $isPopularThisWeek = $popularThisWeek->contains('id', $film->id);
                                     $releaseYear = $film->release_year ?: $film->release_date?->format('Y');
                                 @endphp
-                                <article data-carousel-slide @if ($index !== 0) hidden @endif aria-hidden="{{ $index === 0 ? 'false' : 'true' }}" aria-roledescription="slide" aria-label="{{ $index + 1 }} of {{ $carouselFilms->count() }}" class="relative min-h-[390px] sm:min-h-[430px] lg:min-h-[460px]">
+                                <article data-carousel-slide @if ($index !== 0) hidden @endif aria-hidden="{{ $index === 0 ? 'false' : 'true' }}" aria-roledescription="slide" aria-label="{{ $index + 1 }} of {{ $carouselFilms->count() }}" class="relative isolate min-h-[390px] sm:min-h-[430px] lg:min-h-[460px]">
                                     @if ($posterUrl)
-                                        <img src="{{ $posterUrl }}" alt="" class="absolute inset-0 -z-20 h-full w-full object-cover object-center opacity-55 transition-opacity duration-700 lg:left-auto lg:w-1/2 lg:object-contain lg:object-right lg:opacity-100" @if ($index > 0) loading="lazy" @else fetchpriority="high" @endif onerror="this.style.display='none'">
+                                        <img src="{{ $posterUrl }}" alt="" aria-hidden="true" class="absolute inset-0 -z-20 h-full w-full scale-110 object-cover object-center opacity-35 blur-xl" @if ($index > 0) loading="lazy" @else fetchpriority="high" @endif onerror="this.style.display='none'">
                                     @endif
                                     <div class="absolute inset-0 -z-10 bg-gradient-to-r from-[#0F1726] via-[#0F1726]/90 to-[#0F1726]/30"></div>
                                     <div class="absolute inset-0 -z-10 bg-gradient-to-t from-[#0F1726]/90 via-transparent to-[#0F1726]/20"></div>
+                                    @if ($posterUrl)
+                                        <img src="{{ $posterUrl }}" alt="{{ $film->title }} poster" class="absolute inset-y-0 right-0 z-0 h-full w-full object-contain object-right opacity-95 lg:w-1/2" @if ($index > 0) loading="lazy" @else fetchpriority="high" @endif onerror="this.style.display='none'">
+                                    @endif
 
-                                    <div class="flex min-h-[390px] flex-col justify-end p-6 pb-24 sm:min-h-[430px] sm:p-10 sm:pb-24 lg:min-h-[460px] lg:max-w-[52%] lg:p-12 lg:pb-24">
+                                    <div class="relative z-10 flex min-h-[390px] flex-col justify-end p-6 pb-24 sm:min-h-[430px] sm:p-10 sm:pb-24 lg:min-h-[460px] lg:max-w-[48%] lg:p-12 lg:pb-24">
                                         <div class="mb-4 flex flex-wrap items-center gap-2">
                                             <span class="rounded-full bg-[#B8001F] px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-white">{{ $isPopularThisWeek ? 'Popular this week' : 'Recently added' }}</span>
                                             @if ($releaseYear)
