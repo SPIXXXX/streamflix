@@ -34,12 +34,14 @@
         </div>
     </div>
 
-    <div class="mt-4 min-h-16">
+    <div class="mt-4">
         <h3 class="truncate text-lg font-semibold text-white group-hover:text-sf-blue">{{ $title }}</h3>
-        @if ($description)
-            <p class="mt-1 line-clamp-2 min-h-10 text-sm leading-5 text-sf-muted">{{ $description }}</p>
-        @else
-            <p class="mt-1 min-h-10 text-sm leading-5 text-sf-muted">{{ $official ? 'A curated collection from the CINEVAULT team.' : 'A collection of movies.' }}</p>
+        @unless ($posterMode)
+            @if ($description)
+                <p class="mt-1 line-clamp-2 min-h-10 text-sm leading-5 text-sf-muted">{{ $description }}</p>
+            @else
+                <p class="mt-1 min-h-10 text-sm leading-5 text-sf-muted">{{ $official ? 'A curated collection from the CINEVAULT team.' : 'A collection of movies.' }}</p>
+            @endif
         @endif
     </div>
 

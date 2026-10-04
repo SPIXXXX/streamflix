@@ -2,9 +2,7 @@
     <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <header class="mb-9 flex flex-col gap-5 rounded-3xl border border-sf-border bg-gradient-to-br from-sf-surface via-sf-surface to-sf-bg p-6 shadow-xl sm:flex-row sm:items-end sm:justify-between sm:p-8">
             <div>
-                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-sf-blue">Your movie collections</p>
-                <h1 class="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">Movie Bucket List</h1>
-                <p class="mt-2 max-w-xl text-sm text-sf-muted sm:text-base">Discover curated collections, build your own lists, and keep your favorite movies together.</p>
+                <h1 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">Movie Bucket List</h1>
             </div>
             @auth
                 <a href="{{ route('lists.create') }}" class="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-sf-blue px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-sf-blue/15 transition hover:bg-sf-blue-dark focus:outline-none focus:ring-4 focus:ring-sf-blue/30">
@@ -19,7 +17,6 @@
                 <div class="mb-4 flex items-end justify-between gap-4">
                     <div>
                         <h2 id="my-lists-heading" class="text-xl font-semibold text-white">My Lists</h2>
-                        <p class="mt-1 text-sm text-sf-muted">Your favorites and lists, all in one place.</p>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -46,11 +43,10 @@
             </section>
         @endauth
 
-        @foreach ([['Featured Lists', 'Admin-selected official lists.', $featured, 'Featured'], ['Recently Popular', 'Public lists updated in the last 30 days, ranked by movie count.', $recentlyPopular, 'Popular'], ['Crew Picks', 'Official admin-curated collections that are not featured.', $crewPicks, 'Crew Pick']] as [$label, $description, $lists, $category])
+        @foreach ([['Featured Lists', $featured, 'Featured'], ['Recently Popular', $recentlyPopular, 'Popular'], ['Crew Picks', $crewPicks, 'Crew Pick']] as [$label, $lists, $category])
             <section class="mb-12" aria-label="{{ $label }}">
                 <div class="mb-4">
                     <h2 class="text-xl font-semibold text-white">{{ $label }}</h2>
-                    <p class="mt-1 text-sm text-sf-muted">{{ $description }}</p>
                 </div>
                 @if ($lists->isNotEmpty())
                     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -67,7 +63,6 @@
         <section class="mb-8" aria-labelledby="public-lists-heading">
             <div class="mb-4">
                 <h2 id="public-lists-heading" class="text-xl font-semibold text-white">Explore Public Lists</h2>
-                <p class="mt-1 text-sm text-sf-muted">Collections shared by the community.</p>
             </div>
             @if ($publicLists->isNotEmpty())
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

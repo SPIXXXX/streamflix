@@ -7,7 +7,7 @@
     @php($visibleCount = $visibleMovies->count())
     @php($mobileExtraCount = max(0, $movieCount - min($visibleCount, 3)))
     @php($desktopExtraCount = max(0, $movieCount - $visibleCount))
-    <div class="group/list-poster relative isolate h-56 w-full overflow-visible bg-transparent sm:h-60" role="img" aria-label="{{ $movieCount }} {{ \Illuminate\Support\Str::plural('movie', $movieCount) }} in {{ $list->title }}">
+    <div class="group/list-poster relative isolate h-64 w-full overflow-visible bg-transparent sm:h-72" role="img" aria-label="{{ $movieCount }} {{ \Illuminate\Support\Str::plural('movie', $movieCount) }} in {{ $list->title }}">
         @if ($visibleMovies->isEmpty())
             <div class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-center">
                 <span class="flex h-14 w-14 items-center justify-center text-sf-muted">
@@ -31,7 +31,7 @@
                     default => [-9, -3, 3, 9][$loop->index],
                 })
                 <div @class([
-                    'absolute top-5 h-40 w-[5.25rem] -translate-x-1/2 overflow-hidden rounded-xl border border-white/20 bg-slate-800 shadow-xl shadow-black/50 transition duration-300 ease-out group-hover/list-poster:-translate-y-2 group-hover/list-poster:shadow-2xl sm:top-4 sm:h-44 sm:w-[6rem]',
+                    'absolute top-5 h-48 w-32 -translate-x-1/2 overflow-hidden rounded-xl border border-white/20 bg-slate-800 shadow-xl shadow-black/50 transition duration-300 ease-out group-hover/list-poster:-translate-y-2 group-hover/list-poster:shadow-2xl sm:top-4 sm:h-52 sm:w-36',
                     'hidden md:block' => $loop->index === 3,
                 ]) style="left: {{ $position }}%; z-index: {{ 10 + $loop->index }}; rotate: {{ $rotation }}deg">
                     <x-film-poster-image :film="$film" container-class="h-full w-full transition duration-300 group-hover/list-poster:scale-[1.035]" :alt="$film->title.' poster'" />
