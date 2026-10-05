@@ -15,6 +15,22 @@ if (dashboardDataElement) {
         }
     };
 
+    const genreCounts = new Map();
+    chartData.genres.labels.forEach((genreGroup, index) => {
+        genreGroup.split(',').forEach((genre) => {
+            const normalizedGenre = genre.trim();
+            if (normalizedGenre) {
+                genreCounts.set(
+                    normalizedGenre,
+                    (genreCounts.get(normalizedGenre) ?? 0) + Number(chartData.genres.values[index]),
+                );
+            }
+        });
+    });
+    const popularGenres = [...genreCounts.entries()]
+        .sort((first, second) => second[1] - first[1])
+        .slice(0, 8);
+
     const commonOptions = {
         chart: {
             background: 'transparent',
@@ -39,12 +55,12 @@ if (dashboardDataElement) {
         },
     };
 
-    if (chartData.genres.labels.length > 0) {
+    if (popularGenres.length > 0) {
         new ApexCharts(document.getElementById('genreChart'), {
             ...commonOptions,
             chart: { ...commonOptions.chart, type: 'donut', height: 280 },
-            series: chartData.genres.values,
-            labels: chartData.genres.labels,
+            series: popularGenres.map(([, total]) => total),
+            labels: popularGenres.map(([genre]) => genre),
             colors: ['#e11d48', '#8b5cf6', '#3b82f6', '#06b6d4', '#10b981', '#f59e0b', '#f97316', '#ec4899'],
             stroke: { show: true, colors: ['#17111f'], width: 3 },
             plotOptions: {

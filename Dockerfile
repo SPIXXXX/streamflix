@@ -37,7 +37,8 @@ WORKDIR /var/www/html
 COPY . .
 COPY --from=frontend /var/www/html/public/build ./public/build
 
-RUN COMPOSER_ALLOW_SUPERUSER=1 composer install \
+RUN chmod -R a+rX app bootstrap config database public resources routes \
+    && COMPOSER_ALLOW_SUPERUSER=1 composer install \
         --no-dev \
         --no-interaction \
         --no-progress \
