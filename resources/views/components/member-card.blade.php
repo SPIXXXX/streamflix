@@ -3,12 +3,7 @@
 <article class="group flex h-full flex-col rounded-2xl border border-sf-border bg-sf-surface p-5 shadow-lg shadow-black/10 transition duration-200 hover:-translate-y-1 hover:border-sf-blue/50 hover:bg-sf-surface-light hover:shadow-glow-blue focus-within:ring-2 focus-within:ring-sf-blue/50">
     <div class="flex items-start gap-4">
         <a href="{{ route('members.show', $member) }}" aria-label="View {{ $member->name }}'s profile" class="shrink-0 rounded-full focus:outline-none focus:ring-2 focus:ring-sf-blue focus:ring-offset-2 focus:ring-offset-sf-surface">
-            <span class="relative inline-flex">
-                <x-user-avatar :user="$member" size="h-14 w-14" text-size="text-xl" />
-                @if ($member->is_online)
-                    <span role="img" aria-label="Online" title="Online" class="absolute bottom-0 right-0 h-3.5 w-3.5 rounded-full border-2 border-sf-surface bg-emerald-400"></span>
-                @endif
-            </span>
+            <x-user-avatar :user="$member" size="h-14 w-14" text-size="text-xl" :online="$member->is_online" :featured="$member->is_featured" />
         </a>
         <div class="min-w-0 flex-1">
             <div class="flex flex-wrap items-center gap-2">
@@ -21,9 +16,7 @@
             </div>
             <div class="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-sf-muted">
                 <span>Member since {{ $member->created_at?->format('M Y') }}</span>
-                @if ($member->is_online)
-                    <span class="inline-flex items-center gap-1.5 font-semibold text-emerald-300"><span class="h-1.5 w-1.5 rounded-full bg-emerald-400" aria-hidden="true"></span>Online now</span>
-                @endif
+                <x-user-activity-status :user="$member" />
             </div>
         </div>
     </div>

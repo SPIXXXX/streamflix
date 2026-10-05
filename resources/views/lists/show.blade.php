@@ -30,9 +30,10 @@
                         <p class="mt-2 max-w-2xl text-sm leading-6 text-sf-muted sm:text-base">{{ $list->description }}</p>
                     @endif
                     <div class="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3 text-sm text-sf-muted">
-                        <span class="inline-flex items-center gap-2">
-                            <x-user-avatar :user="$list->user" size="h-7 w-7" text-size="text-xs" />
+                        <span class="inline-flex flex-wrap items-center gap-2">
+                            <x-user-avatar :user="$list->user" size="h-7 w-7" text-size="text-xs" :online="$list->user->is_online" />
                             <span>by <span class="font-medium text-sf-text">{{ $list->user->name }}</span></span>
+                            <x-user-activity-status :user="$list->user" />
                         </span>
                         <span>{{ $list->films_count }} {{ $list->films_count === 1 ? 'movie' : 'movies' }}</span>
                     </div>

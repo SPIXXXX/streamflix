@@ -42,11 +42,24 @@ class DashboardController extends Controller
             ->orderBy('day')
             ->get();
 
-        $yearlyActivity = Review::selectRaw("DATE_FORMAT(created_at, '%Y-%m') as month, count(*) as total")
-            ->where('created_at', '>=', now()->subMonths(12))
+        $activityEnd = now();
+        $activityStart = $activityEnd->copy()->startOfMonth()->subMonths(11);
+        $activityCounts = Review::selectRaw("DATE_FORMAT(created_at, '%Y-%m') as month, count(*) as total")
+            ->where('created_at', '>=', $activityStart)
+            ->where('created_at', '<=', $activityEnd)
             ->groupBy('month')
             ->orderBy('month')
-            ->get();
+            ->get()
+            ->keyBy('month');
+
+        $yearlyActivity = collect(range(0, 11))->map(function (int $monthOffset) use ($activityStart, $activityCounts) {
+            $month = $activityStart->copy()->addMonths($monthOffset)->format('Y-m');
+
+            return (object) [
+                'month' => $month,
+                'total' => (int) ($activityCounts->get($month)->total ?? 0),
+            ];
+        });
 
         $recentActivity = Review::with(['user', 'film'])->latest()->take(8)->get();
 

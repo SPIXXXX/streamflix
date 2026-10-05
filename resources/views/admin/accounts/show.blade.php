@@ -11,7 +11,7 @@
 
     <header class="mt-5 rounded-3xl border border-sf-border bg-gradient-to-br from-sf-surface via-sf-surface to-sf-bg p-5 shadow-xl sm:p-8">
         <div class="flex flex-col gap-5 sm:flex-row sm:items-center">
-            <x-user-avatar :user="$user" size="h-20 w-20 sm:h-24 sm:w-24" text-size="text-3xl" />
+            <x-user-avatar :user="$user" size="h-20 w-20 sm:h-24 sm:w-24" text-size="text-3xl" :online="$user->is_online" />
             <div class="min-w-0 flex-1">
                 <div class="flex flex-wrap items-center gap-2.5">
                     <h1 class="break-words text-2xl font-bold tracking-tight text-white sm:text-3xl">{{ $user->name }}</h1>
@@ -22,6 +22,7 @@
                     @endif
                 </div>
                 <p class="mt-2 break-all text-sm text-sf-muted">{{ $user->email }}</p>
+                <x-user-activity-status :user="$user" />
                 <p class="mt-1 text-xs text-sf-muted">Joined {{ $user->created_at?->format('F j, Y') }}</p>
             </div>
             <x-admin.account-actions :user="$user" context="profile" />

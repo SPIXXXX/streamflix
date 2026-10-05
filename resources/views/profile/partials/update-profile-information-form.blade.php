@@ -26,7 +26,10 @@
         <div>
             <x-input-label for="avatar" value="Profile picture" />
             <div class="mt-2 flex items-center gap-4">
-                <x-user-avatar :user="$user" size="h-14 w-14" text-size="text-lg" />
+                <div class="flex shrink-0 flex-col items-center gap-1.5">
+                    <x-user-avatar :user="$user" size="h-14 w-14" text-size="text-lg" :online="$user->is_online" />
+                    <x-user-activity-status :user="$user" />
+                </div>
                 <div class="flex-1">
                     <input id="avatar" name="avatar" type="file" accept="image/jpeg,image/png,image/webp" class="block w-full rounded-lg border border-sf-border bg-sf-bg p-2 text-sm text-sf-muted file:me-4 file:rounded-md file:border-0 file:bg-sf-surface-light file:px-3 file:py-2 file:text-sf-text">
                     <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">JPEG, PNG, or WebP. Maximum size 2 MB.</p>

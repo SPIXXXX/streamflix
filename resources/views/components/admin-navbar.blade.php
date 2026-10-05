@@ -11,7 +11,7 @@
             <button type="button" class="flex text-sm bg-neutral-primary rounded-full md:me-0 focus:ring-4 focus:ring-neutral-tertiary" id="admin-user-menu-button" aria-expanded="false" data-dropdown-toggle="admin-user-dropdown" data-dropdown-placement="bottom-end">
                 <span class="sr-only">Open admin user menu</span>
                 <span class="relative inline-flex">
-                    <x-user-avatar :user="auth()->user()" />
+                        <x-user-avatar :user="auth()->user()" :online="auth()->user()->is_online" />
                     <span role="img" aria-label="Online" title="Online" class="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-sf-bg bg-emerald-400"></span>
                 </span>
             </button>

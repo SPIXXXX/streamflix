@@ -67,8 +67,9 @@
         <span class="text-sm font-medium text-sf-text">{{ $count }} {{ $count === 1 ? 'movie' : 'movies' }}</span>
         @if ($owner)
             <span class="flex min-w-0 items-center gap-2 text-xs text-sf-muted">
-                <x-user-avatar :user="$owner" size="h-6 w-6" text-size="text-[10px]" :fallback-on-error="$posterMode" />
+                <x-user-avatar :user="$owner" size="h-6 w-6" text-size="text-[10px]" :fallback-on-error="$posterMode" :online="$owner->is_online" />
                 <span class="max-w-24 truncate">{{ $owner->name }}</span>
+                <x-user-activity-status :user="$owner" />
             </span>
         @elseif ($official)
             <span class="text-xs font-medium text-amber-300">Official</span>

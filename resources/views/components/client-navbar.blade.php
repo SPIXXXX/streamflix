@@ -12,7 +12,7 @@
                 <span class="sr-only">Open user menu</span>
                 @auth
                     <span class="relative inline-flex">
-                        <x-user-avatar :user="auth()->user()" />
+                        <x-user-avatar :user="auth()->user()" :online="auth()->user()->is_online" />
                         <span role="img" aria-label="Online" title="Online" class="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-sf-bg bg-emerald-400"></span>
                     </span>
                 @else

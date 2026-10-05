@@ -83,17 +83,17 @@
 
         <div class="grid gap-3">
             @forelse ($recentActivity as $review)
-                <div class="flex items-center justify-between gap-4 border-b border-sf-border pb-3">
+                <a href="{{ route('admin.films.show', $review->film).'#review-'.$review->id }}" class="flex items-center justify-between gap-4 border-b border-sf-border pb-3 transition hover:bg-sf-bg/40 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-sf-blue/60" aria-label="View {{ $review->user->name }}'s review of {{ $review->film->title }}">
                     <div class="flex items-center gap-2">
                         <x-user-avatar :user="$review->user" size="h-8 w-8" text-size="text-xs" />
                         <div>
                             <strong class="mr-1">{{ $review->user->name }}</strong>
-                        <span class="text-sf-muted">reviewed</span>
-                        <span class="text-sf-muted">{{ $review->film->title }}</span>
+                            <span class="text-sf-muted">reviewed</span>
+                            <span class="text-sf-muted">{{ $review->film->title }}</span>
                         </div>
                     </div>
                     <div class="text-sf-muted">★ {{ $review->rating }}</div>
-                </div>
+                </a>
             @empty
                 <div class="text-sf-muted">No recent activity.</div>
             @endforelse
@@ -102,6 +102,7 @@
 
     @php
         $dashboardChartData = [
+            'totalFilms' => $totalFilms,
             'genres' => [
                 'labels' => $popularGenres->pluck('genre')->values(),
                 'values' => $popularGenres->pluck('total')->values(),

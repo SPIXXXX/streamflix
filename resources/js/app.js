@@ -7,6 +7,7 @@ import './ui-feedback.js';
 import './admin-list-film-picker.js';
 import './mobile-nav.js';
 import './film-carousel.js';
+import './user-activity.js';
 
 
 

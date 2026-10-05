@@ -14,6 +14,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewCommentController;
 use App\Http\Controllers\ReviewReactionController;
 use App\Http\Controllers\TeaserController;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -33,6 +35,33 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    Route::post('/heartbeat', function (Request $request) {
+        $request->user()->forceFill([
+            'last_seen_at' => now(),
+            'last_logged_out_at' => null,
+        ])->save();
+
+        return response()->json(['success' => true]);
+    })->name('heartbeat');
+
+    Route::get('/user-activity-status', function (Request $request) {
+        $validated = $request->validate([
+            'users' => ['required', 'array', 'max:100'],
+            'users.*' => ['required', 'integer', 'distinct'],
+        ]);
+        $users = User::query()->whereIn('id', $validated['users']);
+
+        if (! $request->user()->hasRole('admin')) {
+            $users->publicMembers();
+        }
+
+        return response()->json($users->get(['id', 'last_seen_at', 'last_logged_out_at'])->map(fn (User $user): array => [
+            'id' => $user->id,
+            'online' => $user->is_online,
+            'label' => $user->activity_status,
+        ])->values());
+    })->name('user-activity.status');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

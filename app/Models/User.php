@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Traits\HasRoles;
 
-#[Fillable(['name', 'email', 'password', 'status', 'avatar_path', 'is_featured'])]
+#[Fillable(['name', 'email', 'password', 'status', 'avatar_path', 'is_featured', 'last_seen_at'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -35,7 +35,8 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_featured' => 'boolean',
-            'latest_session_activity' => 'integer',
+            'last_seen_at' => 'immutable_datetime',
+            'last_logged_out_at' => 'immutable_datetime',
         ];
     }
 
@@ -105,19 +106,25 @@ class User extends Authenticatable
             ->withCount('reviews')
             ->withAvg('reviews', 'rating')
             ->withCount(['movieLists as public_lists_count' => fn (Builder $lists) => $lists->where('is_public', true)])
-            ->selectSub(
-                DB::table('sessions')
-                    ->selectRaw('MAX(last_activity)')
-                    ->whereColumn('sessions.user_id', 'users.id'),
-                'latest_session_activity',
-            )
             ->selectSub($receivedReactions, 'received_reactions_count');
     }
 
     public function getIsOnlineAttribute(): bool
     {
-        return $this->latest_session_activity !== null
-            && $this->latest_session_activity >= now()->subMinutes(5)->timestamp;
+        return $this->last_seen_at !== null
+            && ($this->last_logged_out_at === null || $this->last_seen_at->greaterThan($this->last_logged_out_at))
+            && $this->last_seen_at->greaterThanOrEqualTo(now()->subMinutes(2));
+    }
+
+    public function getActivityStatusAttribute(): string
+    {
+        if ($this->is_online) {
+            return 'Online';
+        }
+
+        return $this->last_seen_at
+            ? 'Active '.$this->last_seen_at->diffForHumans()
+            : 'Never active';
     }
 
     public function scopeMostActive(Builder $query, int $limit = 6): Builder

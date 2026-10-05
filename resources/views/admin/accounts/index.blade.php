@@ -79,10 +79,16 @@
                             <tr class="transition hover:bg-sf-surface-light/60">
                                 <td class="px-5 py-4">
                                     <a href="{{ route('admin.accounts.show', $user) }}" class="group inline-flex min-w-0 items-center gap-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-sf-blue/50">
-                                        <x-user-avatar :user="$user" size="h-10 w-10" text-size="text-sm" />
+                                        <x-user-avatar :user="$user" size="h-10 w-10" text-size="text-sm" :online="$user->is_online" :featured="$user->is_featured" />
                                         <span class="min-w-0">
-                                            <span class="block max-w-64 truncate font-semibold text-white group-hover:text-sf-text">{{ $user->name }}</span>
+                                            <span class="flex max-w-64 min-w-0 items-center gap-1.5">
+                                                <span class="truncate font-semibold text-white group-hover:text-sf-text">{{ $user->name }}</span>
+                                                @if ($user->is_featured)
+                                                    <span class="shrink-0 rounded-full border border-amber-300/20 bg-amber-300/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-amber-200">Featured</span>
+                                                @endif
+                                            </span>
                                             <span class="block max-w-64 truncate text-xs text-sf-muted">{{ $user->email }}</span>
+                                            <x-user-activity-status :user="$user" />
                                         </span>
                                     </a>
                                 </td>
@@ -113,11 +119,17 @@
                 <article class="rounded-2xl border border-sf-border bg-sf-surface p-4 shadow-lg shadow-black/10">
                     <div class="flex items-start gap-3">
                         <a href="{{ route('admin.accounts.show', $user) }}" aria-label="View {{ $user->name }}'s account">
-                            <x-user-avatar :user="$user" size="h-12 w-12" text-size="text-base" />
+                            <x-user-avatar :user="$user" size="h-12 w-12" text-size="text-base" :online="$user->is_online" :featured="$user->is_featured" />
                         </a>
                         <div class="min-w-0 flex-1">
-                            <a href="{{ route('admin.accounts.show', $user) }}" class="block truncate font-semibold text-white hover:text-sf-text">{{ $user->name }}</a>
+                            <a href="{{ route('admin.accounts.show', $user) }}" class="flex min-w-0 items-center gap-1.5 font-semibold text-white hover:text-sf-text">
+                                <span class="truncate">{{ $user->name }}</span>
+                                @if ($user->is_featured)
+                                    <span class="shrink-0 rounded-full border border-amber-300/20 bg-amber-300/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-amber-200">Featured</span>
+                                @endif
+                            </a>
                             <p class="truncate text-xs text-sf-muted">{{ $user->email }}</p>
+                            <x-user-activity-status :user="$user" />
                             <div class="mt-2 flex flex-wrap gap-1.5">
                                 <x-admin.account-status-badge :status="$user->status" />
                                 <x-admin.account-role-badge :admin="$user->hasRole('admin')" />

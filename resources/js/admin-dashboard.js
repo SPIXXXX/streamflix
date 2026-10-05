@@ -75,7 +75,7 @@ if (dashboardDataElement) {
                                 show: true,
                                 label: 'Films',
                                 color: textColor,
-                                formatter: (chart) => chart.globals.seriesTotals.reduce((total, count) => total + count, 0),
+                                formatter: () => chartData.totalFilms,
                             },
                         },
                     },
