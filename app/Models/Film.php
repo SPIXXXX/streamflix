@@ -97,8 +97,16 @@ class Film extends Model
             return app(TmdbService::class)->posterUrl($posterPath, 'w500');
         }
 
-        return Storage::disk('public')->exists($posterPath)
-            ? Storage::disk('public')->url($posterPath)
-            : null;
+        if (Storage::disk('public')->exists($posterPath)) {
+            return Storage::disk('public')->url($posterPath);
+        }
+
+        if (app()->environment('local') && $this->tmdb_id) {
+            $metadata = app(TmdbService::class)->movieMetadata((int) $this->tmdb_id);
+
+            return app(TmdbService::class)->posterUrl($metadata['poster_path'] ?? null, 'w500');
+        }
+
+        return null;
     }
 }

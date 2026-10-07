@@ -78,6 +78,7 @@ class TmdbService
         $keywords = data_get($details, 'keywords.keywords', data_get($details, 'keywords.results', []));
         $metadata = [
             'available' => true,
+            'poster_path' => $details['poster_path'] ?? null,
             'genres' => collect($details['genres'] ?? [])->map(fn (array $genre): array => [
                 'id' => (int) ($genre['id'] ?? 0),
                 'name' => (string) ($genre['name'] ?? ''),

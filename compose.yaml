@@ -4,6 +4,8 @@ services:
             context: .
             dockerfile: Dockerfile
         image: 'streamflix/app:local'
+        volumes:
+            - './storage/app/public:/var/www/html/storage/app/public'
         ports:
             - '${APP_PORT:-80}:10000'
         env_file:

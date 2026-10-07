@@ -59,6 +59,8 @@
         const saveFilmsBtn = document.getElementById('saveFilmsBtn');
         const filmsPayload = document.getElementById('filmsPayload');
         const films = new Map();
+        const pendingFilmDetails = new Set();
+        const filmDetailRequests = new Map();
         let activeFilmId = null;
         const detailUrlTemplate = @json(route('admin.films.tmdb-details', ['tmdbId' => 'TMDB_ID']));
 
@@ -87,6 +89,8 @@
                 const card = document.createElement('button');
                 card.type = 'button';
                 card.dataset.tmdbId = id;
+                card.dataset.title = film.title || '';
+                card.dataset.releaseYear = film.release_year || '';
                 card.dataset.posterPath = film.poster_path || '';
                 card.dataset.posterUrl = film.poster_url || '';
                 card.setAttribute('aria-pressed', selected ? 'true' : 'false');
@@ -130,10 +134,13 @@
             reviewCarousel.classList.toggle('hidden', films.size === 0);
             reviewCarousel.classList.toggle('flex', films.size > 0);
             queueCount.textContent = `${films.size} selected`;
-            saveFilmsBtn.disabled = films.size === 0;
-            document.getElementById('saveHint').textContent = films.size
-                ? `${films.size} film${films.size === 1 ? '' : 's'} ready to save after review.`
-                : 'Select at least one film to enable saving.';
+            const pendingCount = [...pendingFilmDetails].filter((id) => films.has(id)).length;
+            saveFilmsBtn.disabled = films.size === 0 || pendingCount > 0;
+            document.getElementById('saveHint').textContent = pendingCount
+                ? `Loading details for ${pendingCount} film${pendingCount === 1 ? '' : 's'}...`
+                : (films.size
+                    ? `${films.size} film${films.size === 1 ? '' : 's'} ready to save after review.`
+                    : 'Select at least one film to enable saving.');
             syncPayload();
             renderCarousel();
             renderActiveReview();
@@ -280,6 +287,47 @@
             } finally { setSearching(false); }
         }
 
+        async function loadFilmDetails(tmdbId) {
+            let request = filmDetailRequests.get(tmdbId);
+            if (!request) {
+                const detailUrl = detailUrlTemplate.replace('TMDB_ID', encodeURIComponent(tmdbId));
+                request = fetch(detailUrl, { headers: { Accept: 'application/json' } }).then(async (response) => {
+                    const detail = await response.json();
+                    if (!response.ok) throw new Error(detail.message || 'Could not load film details.');
+
+                    return detail;
+                });
+                filmDetailRequests.set(tmdbId, request);
+                pendingFilmDetails.add(tmdbId);
+            }
+
+            try {
+                const detail = await request;
+                const film = films.get(tmdbId);
+                if (!film) return;
+
+                Object.assign(film, {
+                    tmdb_id: Number(detail.tmdb_id), title: detail.title || film.title, original_title: detail.original_title || '',
+                    synopsis: detail.synopsis || '', genre: detail.genre || '', release_date: detail.release_date || '',
+                    release_year: detail.release_year || film.release_year, cast: detail.cast || '',
+                    poster_path: detail.poster_path || film.poster_path, poster_url: detail.poster_url || film.poster_url,
+                });
+                setStatus(`${film.title} selected. Review its poster and details below.`);
+            } catch (error) {
+                if (films.has(tmdbId)) {
+                    films.delete(tmdbId);
+                    if (activeFilmId === tmdbId) activeFilmId = films.keys().next().value || null;
+                }
+                setStatus(error.message || 'Could not load film details.');
+            } finally {
+                if (filmDetailRequests.get(tmdbId) === request) {
+                    filmDetailRequests.delete(tmdbId);
+                    pendingFilmDetails.delete(tmdbId);
+                    updateQueue();
+                }
+            }
+        }
+
         tmdbLookupBtn.addEventListener('click', searchTmdb);
         tmdbLookupInput.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') { event.preventDefault(); searchTmdb(); }
@@ -290,34 +338,22 @@
             if (!button || button.disabled) return;
             const tmdbId = String(button.dataset.tmdbId);
             if (films.has(tmdbId)) {
-                activeFilmId = tmdbId;
+                films.delete(tmdbId);
+                if (activeFilmId === tmdbId) activeFilmId = films.keys().next().value || null;
                 updateQueue();
-                document.getElementById(`review-film-${tmdbId}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                setStatus(`${button.dataset.title || 'Film'} removed from the selection.`);
                 return;
             }
             if (films.size >= 20) return setStatus('You can review up to 20 films in one batch.');
-            button.disabled = true;
-            setStatus('Loading full TMDB details...');
-            try {
-                const detailUrl = detailUrlTemplate.replace('TMDB_ID', encodeURIComponent(tmdbId));
-                const response = await fetch(detailUrl, { headers: { Accept: 'application/json' } });
-                const detail = await response.json();
-                if (!response.ok) throw new Error(detail.message || 'Could not load film details.');
-                if (films.has(tmdbId)) return;
-                films.set(tmdbId, {
-                    tmdb_id: Number(detail.tmdb_id), title: detail.title || '', original_title: detail.original_title || '',
-                    synopsis: detail.synopsis || '', genre: detail.genre || '', release_date: detail.release_date || '',
-                    release_year: detail.release_year || '', cast: detail.cast || '', poster_path: detail.poster_path || button.dataset.posterPath || '',
-                    poster_url: detail.poster_url || button.dataset.posterUrl || '',
-                });
-                activeFilmId = tmdbId;
-                button.disabled = false;
-                updateQueue();
-                setStatus(`${detail.title} selected. Review its poster and details below.`);
-            } catch (error) {
-                button.disabled = false;
-                setStatus(error.message || 'Could not load film details.');
-            }
+            films.set(tmdbId, {
+                tmdb_id: Number(tmdbId), title: button.dataset.title || '', original_title: '', synopsis: '', genre: '',
+                release_date: '', release_year: button.dataset.releaseYear || '', cast: '', poster_path: button.dataset.posterPath || '',
+                poster_url: button.dataset.posterUrl || '',
+            });
+            activeFilmId = tmdbId;
+            updateQueue();
+            setStatus(`Loading details for ${button.dataset.title || 'film'}...`);
+            loadFilmDetails(tmdbId);
         });
 
         reviewQueue.addEventListener('input', (event) => {
